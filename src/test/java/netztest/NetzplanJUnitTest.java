@@ -30,4 +30,7 @@ public class NetzplanJUnitTest extends TestCase {
 
     // TODO add test methods here. The name must begin with 'test'. For example:
     // public void testHello() {}
+    public void testHello(){
+        
+    }
 }
