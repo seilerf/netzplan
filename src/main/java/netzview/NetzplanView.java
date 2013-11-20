@@ -6,16 +6,22 @@
 
 package netzview;
 
+import static java.lang.System.exit;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.JFrame;
+import netzcontroller.NetzplanController;
+
 /**
  *
  * @author Maxwell
  */
-public class NetzplanView extends javax.swing.JFrame {
+public class NetzplanView extends JFrame implements Observer{
 
     /**
      * Creates new form NetzplanView
      */
-    public NetzplanView() {
+    public NetzplanView(NetzplanController netzplan) {
         initComponents();
     }
 
@@ -28,7 +34,38 @@ public class NetzplanView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu3 = new javax.swing.JMenu();
+        menuNeu = new javax.swing.JMenuItem();
+        menuEnd = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jMenu3.setText("Netzplan");
+
+        menuNeu.setText("Neu...");
+        menuNeu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuNeuActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuNeu);
+
+        menuEnd.setText("Beenden");
+        menuEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEndActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuEnd);
+
+        jMenuBar2.add(jMenu3);
+
+        jMenu4.setText("Bearbeiten");
+        jMenuBar2.add(jMenu4);
+
+        setJMenuBar(jMenuBar2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -38,47 +75,30 @@ public class NetzplanView extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 279, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NetzplanView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NetzplanView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NetzplanView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NetzplanView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void menuNeuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNeuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuNeuActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NetzplanView().setVisible(true);
-            }
-        });
-    }
+    private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
+        System.out.println("Beenden");
+        exit(0);// TODO add your handling code here:
+    }//GEN-LAST:event_menuEndActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuItem menuEnd;
+    private javax.swing.JMenuItem menuNeu;
     // End of variables declaration//GEN-END:variables
+
+    public void update(Observable o, Object arg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

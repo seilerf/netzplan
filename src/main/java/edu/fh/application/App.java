@@ -1,13 +1,16 @@
 package edu.fh.application;
 
-/**
- * Hello world!
- *
- */
+import netzcontroller.VorgangController;
+
+
 public class App 
 {
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+    public static void main(String[] args) {
+        
+        //Anzahl möglicher Vorgänge im Netzplan
+        final int MAX=50;
+        
+        VorgangController vorgangCont = new VorgangController();
+        
     }
 }
