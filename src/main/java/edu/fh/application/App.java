@@ -1,6 +1,7 @@
 package edu.fh.application;
 
 import netzcontroller.VorgangController;
+import netzview.StartView;
 
 
 public class App 
@@ -10,6 +11,7 @@ public class App
         //Anzahl möglicher Vorgänge im Netzplan
         final int MAX=50;
         
+        StartView startView = new StartView();
         VorgangController vorgangCont = new VorgangController();
         
     }

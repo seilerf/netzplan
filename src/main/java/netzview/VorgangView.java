@@ -33,10 +33,9 @@ public class VorgangView extends JFrame implements Observer{
     
     public VorgangView(VorgangController controller) {
         
-        this.editable = true;
+        this.editable = false;
         this.setTitle("Vorgang");
         this.setSize(350, 200);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         JMenuBar menu = new JMenuBar();
         JMenu menuVorgang = new JMenu("Vorgang");
