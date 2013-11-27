@@ -29,12 +29,11 @@ public class Vorgang extends Observable {
     // Nachfolger
     private Vorgang nachf;
 
-    public Vorgang(String name, double dauer, double faz, double sez) {
+    public Vorgang(String name, double dauer) {
         this.name = name;
         this.dauer = dauer;
-        this.faz = faz;
-        this.sez = sez;
         this.nachf = null;
+        this.vorgaenger = null;
     }
     
     public Vorgang(){
