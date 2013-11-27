@@ -16,31 +16,40 @@ public class Vorgang extends Observable {
     
     private String name;
     private double dauer;
-    private double fAnfang;
-    private double sEnde;
+    // Frühester Anfangszeitpunkt
+    private double faz;
+    // Frühester Endzeitpunkt
+    private double fez;
+    // Spätester Anfangszeitpunkt
+    private double saz;
+    // Spätester Endzeitpunkt
+    private double sez;
+    // Vorgänger
+    private Vorgang vorgaenger;
+    // Nachfolger
     private Vorgang nachf;
 
-    public Vorgang(String name, double dauer, double fAnfang, double sEnde) {
+    public Vorgang(String name, double dauer, double faz, double sez) {
         this.name = name;
         this.dauer = dauer;
-        this.fAnfang = fAnfang;
-        this.sEnde = sEnde;
+        this.faz = faz;
+        this.sez = sez;
         this.nachf = null;
     }
     
     public Vorgang(){
         this.name = "";
         this.dauer = 0.0;
-        this.fAnfang = 0.0;
-        this.sEnde = 0.0;
+        this.faz = 0.0;
+        this.sez = 0.0;
         this.nachf = null;
     }
     
     public Vorgang(String name){
         this.name = name;
         this.dauer = 0.0;
-        this.fAnfang = 0.0;
-        this.sEnde = 0.0;
+        this.faz = 0.0;
+        this.sez = 0.0;
         this.nachf = null;
     }
 
@@ -48,45 +57,71 @@ public class Vorgang extends Observable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public double getDauer() {
         return dauer;
     }
 
-    public double getfAnfang() {
-        return fAnfang;
+    public void setDauer(double dauer) {
+        this.dauer = dauer;
     }
 
-    public double getsEnde() {
-        return sEnde;
+    public double getFaz() {
+        return faz;
+    }
+
+    public void setFaz(double faz) {
+        this.faz = faz;
+    }
+
+    public double getFez() {
+        return fez;
+    }
+
+    public void setFez(double fez) {
+        this.fez = fez;
+    }
+
+    public double getSaz() {
+        return saz;
+    }
+
+    public void setSaz(double saz) {
+        this.saz = saz;
+    }
+
+    public double getSez() {
+        return sez;
+    }
+
+    public void setSez(double sez) {
+        this.sez = sez;
+    }
+
+    public Vorgang getVorgaenger() {
+        return vorgaenger;
+    }
+
+    public void setVorgaenger(Vorgang vorgaenger) {
+        this.vorgaenger = vorgaenger;
     }
 
     public Vorgang getNachf() {
         return nachf;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public void setDauer(double dauer) {
-        this.dauer = dauer;
-    }
-
-    public void setfAnfang(double fAnfang) {
-        this.fAnfang = fAnfang;
-    }
-
-    public void setsEnde(double sEnde) {
-        this.sEnde = sEnde;
-    }
-
     public void setNachf(Vorgang nachf) {
         this.nachf = nachf;
     }
+
     
-    public double getFruehestEnde() {
+    
+    public double getFEZ() {
         // Evtl. Fehlberechnung abfangen, wenn noch kein fAnfang initialisiert
-        return (this.fAnfang + this.dauer);
+        return (this.faz + this.dauer);
     }
     
 }
