@@ -6,8 +6,8 @@
 
 package netzplan;
 
+import java.util.LinkedList;
 import java.util.Observable;
-import java.util.TreeSet;
 
 /**
  *
@@ -17,9 +17,9 @@ public class Netzplan extends Observable{
     private int anzahl;
     private int start;
     private int ende;
-    private TreeSet<Vorgang> vorgaenge;
+    private LinkedList<Vorgang> vorgaenge;
 
-    public TreeSet<Vorgang> getVorgaenge() {
+    public LinkedList<Vorgang> getVorgaenge() {
         return vorgaenge;
     }
 
@@ -27,14 +27,14 @@ public class Netzplan extends Observable{
         this.anzahl = anzahl;
         this.start = start;
         this.ende = ende;
-        this.vorgaenge = new TreeSet<Vorgang>();
+        this.vorgaenge = new LinkedList<Vorgang>();
     }
 
     public Netzplan() {
         this.anzahl = 0;
         this.start = 0;
         this.ende = 0;
-        this.vorgaenge = new TreeSet<Vorgang>();
+        this.vorgaenge = new LinkedList<Vorgang>();
     }
     
     
@@ -64,7 +64,10 @@ public class Netzplan extends Observable{
     }
 
     public void fuegeEin(Vorgang vorgang) {
-        this.vorgaenge.add(vorgang);
+        if (this.vorgaenge.isEmpty())
+            this.vorgaenge.addFirst(vorgang);
+        else
+            this.vorgaenge.addLast(vorgang);
     }
     
 }
