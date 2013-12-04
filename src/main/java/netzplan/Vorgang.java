@@ -25,9 +25,9 @@ public class Vorgang extends Observable {
     // Spätester Endzeitpunkt
     private double sez;
     // Vorgänger
-    private Vorgang vorgaenger;
+    private Vorgang[] vorgaenger;
     // Nachfolger
-    private Vorgang nachf;
+    private Vorgang[] nachf;
 
     public Vorgang(String name, double dauer) {
         this.name = name;
@@ -100,22 +100,22 @@ public class Vorgang extends Observable {
         this.sez = sez;
     }
 
-    public Vorgang getVorgaenger() {
+    public Vorgang[] getVorgaenger() {
         return vorgaenger;
     }
 
-    public void setVorgaenger(Vorgang vorgaenger) {
+    public void setVorgaenger(Vorgang[] vorgaenger) {
         this.vorgaenger = vorgaenger;
     }
 
-    public Vorgang getNachf() {
+    public Vorgang[] getNachf() {
         return nachf;
     }
 
-    public void setNachf(Vorgang nachf) {
+    public void setNachf(Vorgang[] nachf) {
         this.nachf = nachf;
     }
-
+    
     
     
     public double getFEZ() {
