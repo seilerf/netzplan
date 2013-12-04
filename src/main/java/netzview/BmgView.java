@@ -27,6 +27,7 @@ import org.jfree.ui.RefineryUtilities;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.JFrame;
 import netzcontroller.GanttController;
 
 
@@ -36,12 +37,13 @@ import netzcontroller.GanttController;
  *
  * @author Anton
  */
-public class BmgView extends ApplicationFrame {
+public class BmgView extends JFrame {
     
     
     public BmgView(final String title) {
         
         super(title);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         final CategoryDataset dataset = createDataset();
         final JFreeChart chart = createChart(dataset);
         final ChartPanel chartPanel = new ChartPanel(chart);

@@ -21,15 +21,11 @@ public class NewNetzController implements ActionListener{
     private NewNetzView netzview;
 
     public NewNetzController() {
-        //Modell
-       // this.vorgang = new Vorgang();
-        //this.vorgang.setName("Testvorgang");
-        // View
+       
         this.netzview = new NewNetzView(this);
-        
-        // Observer für die Modelle
-        //this.vorgang.addObserver(this.vorgangView);
+       
         this.netzview.setVisible(true);
+        netzview.pack();
     }
     
     public void actionPerformed(ActionEvent e) {

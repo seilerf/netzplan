@@ -34,7 +34,7 @@ public class OeffnenView extends JFrame implements Observer{
     public OeffnenView(NetzOeffnenController controller) {
         
         this.editable = false;
-        this.setTitle("Neuer Netzplan");
+        this.setTitle("Netzplan Öffnen");
         this.setSize(350, 200);
         
         JMenuBar menu = new JMenuBar();

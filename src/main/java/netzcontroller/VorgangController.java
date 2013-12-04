@@ -30,6 +30,8 @@ public class VorgangController implements ActionListener{
         // Observer für die Modelle
         this.vorgang.addObserver(this.vorgangView);
         this.vorgangView.setVisible(true);
+        vorgangView.pack();
+        
     }
     
     public void actionPerformed(ActionEvent e) {

@@ -30,14 +30,13 @@ public class NetzOeffnenController implements ActionListener{
         // Observer für die Modelle
         //this.vorgang.addObserver(this.vorgangView);
         this.oeffnenview.setVisible(true);
+        oeffnenview.pack();
     }
     
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public String getVorgangName(){
-        return this.vorgang.getName();
-    }
+    
     
 }

@@ -104,8 +104,8 @@ public class NewNetzView extends JFrame implements Observer{
         addComponent(inhalt, gbl, txtSAZ,         0, 3,   1, 1,   3, 0);
         //addComponent(inhalt, gbl, txtPuffer,      1, 3,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtSEZ,         2, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, btnEditSave,    1, 5,   1, 1,   1, 1);
-        addComponent(inhalt, gbl, neuVorgang,    0, 5,   1, 1,   2, 2);
+        addComponent(inhalt, gbl, btnEditSave,    1, 5,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, neuVorgang,    0, 5,   1, 1,   3, 0);
     }
 
     
