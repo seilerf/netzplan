@@ -14,9 +14,9 @@ import java.sql.*;
  */
 public class SQLConnect {
     
-    // MySQL
+    // MySQL Parameter
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DATABASE_URL = "jdbc:mysql://localhost/test";
+    static final String DATABASE_URL = "jdbc:mysql://localhost/netzplan";
     static final String USER = "oop13";
     static final String PWD = "1234";
 
@@ -27,8 +27,9 @@ public class SQLConnect {
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DATABASE_URL,USER,PWD);
+            System.out.println("Verbindung hergestellt!");
             stmt = conn.createStatement();
-	
+            
         } 
         catch (ClassNotFoundException e) {
             System.out.println("JDBC_DRIVER wohl nicht gefunden, .jar eingebunden?");
