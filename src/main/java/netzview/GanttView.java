@@ -1,6 +1,8 @@
 package netzview;
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 import netzcontroller.GanttController;
 
 import org.jfree.chart.ChartFactory;
@@ -20,12 +22,12 @@ import org.jfree.ui.RefineryUtilities;
  *
  * @author Anton
  */
-public class GanttView extends ApplicationFrame {
+public class GanttView extends JFrame {
     
 public GanttView(final String title, GanttController controller) {
 
         super(title);
-
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         final IntervalCategoryDataset dataset = createDataset();
         final JFreeChart chart = createChart(dataset);
 
@@ -33,6 +35,7 @@ public GanttView(final String title, GanttController controller) {
         final ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
         setContentPane(chartPanel);
+        
 
     }
 
