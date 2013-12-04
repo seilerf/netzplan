@@ -1,5 +1,6 @@
 package edu.fh.application;
 
+import database.SQLConnect;
 import netzcontroller.VorgangController;
 import netzview.StartView;
 import netzcontroller.NewNetzController;
@@ -14,6 +15,7 @@ public class App
         //Anzahl möglicher Vorgänge im Netzplan
         final int MAX=50;
         
+        SQLConnect sql = new SQLConnect();
         StartView startView = new StartView();
        // startView.pack();
         
