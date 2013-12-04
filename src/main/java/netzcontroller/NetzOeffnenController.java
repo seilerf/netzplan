@@ -9,27 +9,27 @@ package netzcontroller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import netzplan.Vorgang;
-import netzview.VorgangView;
+import netzview.OeffnenView;
 
 /**
  *
- * @author fseiler
+ * @author Anton
  */
-public class VorgangController implements ActionListener{
+public class NetzOeffnenController implements ActionListener{
 
     private Vorgang vorgang;
-    private VorgangView vorgangView;
+    private OeffnenView oeffnenview;
 
-    public VorgangController() {
+    public NetzOeffnenController() {
         //Modell
-        this.vorgang = new Vorgang();
-        this.vorgang.setName("Neuer Vorgang");
+       // this.vorgang = new Vorgang();
+        //this.vorgang.setName("Testvorgang");
         // View
-        this.vorgangView = new VorgangView(this);
+        this.oeffnenview = new OeffnenView(this);
         
         // Observer für die Modelle
-        this.vorgang.addObserver(this.vorgangView);
-        this.vorgangView.setVisible(true);
+        //this.vorgang.addObserver(this.vorgangView);
+        this.oeffnenview.setVisible(true);
     }
     
     public void actionPerformed(ActionEvent e) {

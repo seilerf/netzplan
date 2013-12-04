@@ -13,7 +13,6 @@ import java.awt.GridBagLayout;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -22,27 +21,28 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
-import netzcontroller.VorgangController;
+import netzcontroller.NewNetzController;
 
 /**
  *
- * @author fseiler
+ * @author Anton
  */
-public class VorgangView extends JFrame implements Observer{
+public class NewNetzView extends JFrame implements Observer{
 
     private boolean editable;
     
-    public VorgangView(VorgangController controller) {
+    public NewNetzView(NewNetzController controller) {
         
         this.editable = false;
-        this.setTitle("Vorgang");
+        this.setTitle("Neuer Netzplan");
         this.setSize(350, 200);
         
         JMenuBar menu = new JMenuBar();
-        JMenu menuVorgang = new JMenu("Vorgang");
+        JMenu menuVorgang = new JMenu("Datei");
         JMenuItem menuEnde = new JMenuItem("Schließen");
-        
+        JMenuItem speichern = new JMenuItem("Speichern");
         menuVorgang.add(menuEnde);
+        menuVorgang.add(speichern);
         
         menu.add(menuVorgang);
         this.setJMenuBar(menu);
@@ -52,63 +52,60 @@ public class VorgangView extends JFrame implements Observer{
         Container inhalt = this.getContentPane();
         inhalt.setLayout(gbl);
         
-        JLabel titel = new JLabel(controller.getVorgangName());
-        titel.setHorizontalAlignment(SwingConstants.CENTER);
+        //JLabel titel = new JLabel(controller.getVorgangName());
+      //  titel.setHorizontalAlignment(SwingConstants.CENTER);
         
         // Textfelder erstellen, die die Daten beinhalten
         JTextField txtFAZ = new JTextField();
-        txtFAZ.setBorder(new TitledBorder("FAZ"));
+        txtFAZ.setBorder(new TitledBorder("Maximale Dauer"));
         txtFAZ.setHorizontalAlignment(SwingConstants.CENTER);
         txtFAZ.setEditable(true);
 
         JTextField txtFEZ = new JTextField();
-        txtFEZ.setBorder(new TitledBorder("FEZ"));
+        txtFEZ.setBorder(new TitledBorder("Anzahl Vorgänge"));
         txtFEZ.setHorizontalAlignment(SwingConstants.CENTER);
         txtFEZ.setEditable(true);
         
         JTextField txtSAZ = new JTextField();
-        txtSAZ.setBorder(new TitledBorder("SAZ"));
+        txtSAZ.setBorder(new TitledBorder("Name"));
         txtSAZ.setHorizontalAlignment(SwingConstants.CENTER);
         txtSAZ.setEditable(true);
         
         JTextField txtSEZ = new JTextField();
-        txtSEZ.setBorder(new TitledBorder("SEZ"));
+        txtSEZ.setBorder(new TitledBorder("dies das Ananas"));
         txtSEZ.setHorizontalAlignment(SwingConstants.CENTER);
         txtSEZ.setEditable(true);
         
         JTextField txtDauer = new JTextField();
-        txtDauer.setBorder(new TitledBorder("Dauer"));
+        txtDauer.setBorder(new TitledBorder("blub"));
         txtDauer.setHorizontalAlignment(SwingConstants.CENTER);
         txtDauer.setEditable(true);
         
-        JTextField txtPuffer = new JTextField();
-        txtPuffer.setBorder(new TitledBorder("Puffer"));
-        txtPuffer.setHorizontalAlignment(SwingConstants.CENTER);
-        txtPuffer.setEditable(true);
-        
-        JComboBox combobox = new JComboBox();
-        combobox.setBorder(new TitledBorder("Netzplan:"));
-        //combobox.setHorizontalAlignment(SwingConstants.CENTER);
-       
-        
+     
         
         JButton btnEditSave = new JButton();
-        
+       
             btnEditSave.setText("Speichern");
             btnEditSave.addActionListener(controller);
         
+            
+            JButton neuVorgang = new JButton();
+       
+            neuVorgang.setText("Vorgänge anlegen");
+            neuVorgang.addActionListener(controller);
+            
         
         // Zeichnen der Komponenten in das GUI
         //                                        x  y    b  h    wx wy
-        addComponent(inhalt, gbl, titel,          0, 0,   3, 1,   0, 0);
+      //  addComponent(inhalt, gbl, titel,          0, 0,   3, 1,   0, 0);
         addComponent(inhalt, gbl, txtFAZ,         0, 1,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtDauer,       1, 1,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtFEZ,         2, 1,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtSAZ,         0, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtPuffer,      1, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, combobox,      2, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSEZ,         0, 4,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, btnEditSave,    0, 5,   0, 0,   0, 0);
+        //addComponent(inhalt, gbl, txtPuffer,      1, 3,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtSEZ,         2, 3,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, btnEditSave,    1, 5,   1, 1,   1, 1);
+        addComponent(inhalt, gbl, neuVorgang,    0, 5,   1, 1,   2, 2);
     }
 
     

@@ -2,6 +2,9 @@ package edu.fh.application;
 
 import netzcontroller.VorgangController;
 import netzview.StartView;
+import netzcontroller.NewNetzController;
+import netzview.GanttView;
+import org.jfree.ui.RefineryUtilities;
 
 
 public class App 
@@ -12,7 +15,16 @@ public class App
         final int MAX=50;
         
         StartView startView = new StartView();
-        VorgangController vorgangCont = new VorgangController();
+       // startView.pack();
+        
+        
+        
+
+        
+
+    
+        
+       
         
     }
 }
