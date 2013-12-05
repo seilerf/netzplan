@@ -9,7 +9,7 @@ package database;
 import java.sql.*;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
+import netzplan.Netzplan;
 import netzplan.Vorgang;
 
 /**
@@ -36,7 +36,7 @@ public class SQLConnect {
             conn = DriverManager.getConnection(DATABASE_URL,USER,PWD);
             System.out.println("Verbindung hergestellt zu " + DATABASE_URL + "!");
             stmt = conn.createStatement();
-            this.ladeVorgaenge();
+            this.ladeNetzplan();
             
         } 
         catch (ClassNotFoundException e) {
@@ -63,20 +63,54 @@ public class SQLConnect {
         return this.conn;
     }
     
-    public void ladeVorgaenge() throws SQLException {
-        ResultSet rsVorgaenge = this.getConnection().createStatement().executeQuery("SELECT * FROM vorgang WHERE Netzplan_idNetzplan = 1");
+    public LinkedList<Vorgang> getVorgaenge() {
+        return vorgaenge;
+    }
+    
+    public Netzplan ladeNetzplan() throws SQLException {
+        Netzplan netzplan = null;
+        String sqlQuery = "SELECT * FROM netzplan WHERE idNetzplan = 1";
+        ResultSet rsNetzplan = this.getConnection().createStatement().executeQuery(sqlQuery);
         
-        this.vorgaenge = new LinkedList<Vorgang>();
+        LinkedList<Netzplan> netzplanList = new LinkedList<Netzplan>();
+        
+        try {
+            while (rsNetzplan.next())
+                netzplanList.add(new Netzplan((Integer) rsNetzplan.getObject("idNetzplan"), (String) rsNetzplan.getObject("nameNetzplan")));
+            
+            if (netzplanList.size() == 1)
+                netzplan = netzplanList.getFirst();
+            else {
+                //...
+            }
+            
+            netzplan.setVorgaenge(this.ladeVorgaenge(netzplan.getId()));
+            
+            return netzplan;
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+            return netzplan;
+        }
+    }
+    
+    public LinkedList<Vorgang> ladeVorgaenge(int idNetzplan) throws SQLException {
+        String sqlQuery = "SELECT * FROM vorgang WHERE Netzplan_idNetzplan = " + idNetzplan + ";";
+        ResultSet rsVorgaenge = this.getConnection().createStatement().executeQuery(sqlQuery);
+        
+        LinkedList<Vorgang> vorgaenge = new LinkedList<Vorgang>();
         while(rsVorgaenge.next()){
             
             vorgaenge.add(new Vorgang((String) rsVorgaenge.getObject("nameVorgang"), (Double) rsVorgaenge.getObject("dauer")));
-            //System.out.println(rsVorgaenge.getObject("nameVorgang"));
+            System.out.println(rsVorgaenge.getObject("nameVorgang"));
         }
-        
         
         /*Iterator<Vorgang> vorgIterator = vorgaenge.iterator();
         while(vorgIterator.hasNext()) {
             System.out.println(vorgIterator.next().getName());
         }*/
-     }
+        
+        return vorgaenge;
+    }
+   
 }

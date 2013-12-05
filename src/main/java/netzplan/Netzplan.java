@@ -14,6 +14,8 @@ import java.util.Observable;
  * @author fseiler
  */
 public class Netzplan extends Observable{
+    private String name;
+    private int id;
     private int anzahl;
     private int start;
     private int ende;
@@ -23,6 +25,11 @@ public class Netzplan extends Observable{
         return vorgaenge;
     }
 
+    public Netzplan(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+    
     public Netzplan(int anzahl, int start, int ende) {
         this.anzahl = anzahl;
         this.start = start;
@@ -36,9 +43,15 @@ public class Netzplan extends Observable{
         this.ende = 0;
         this.vorgaenge = new LinkedList<Vorgang>();
     }
-    
-    
 
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+    
     public int getAnzahl() {
         return anzahl;
     }
@@ -63,11 +76,7 @@ public class Netzplan extends Observable{
         this.ende = ende;
     }
 
-    public void fuegeEin(Vorgang vorgang) {
-        if (this.vorgaenge.isEmpty())
-            this.vorgaenge.addFirst(vorgang);
-        else
-            this.vorgaenge.addLast(vorgang);
+    public void setVorgaenge(LinkedList<Vorgang> vorgaenge) {
+        this.vorgaenge = vorgaenge;
     }
-    
 }
