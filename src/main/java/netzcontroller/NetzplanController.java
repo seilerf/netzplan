@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import netzplan.Netzplan;
 import netzview.NetzplanView;
 
@@ -24,14 +26,23 @@ public class NetzplanController implements ActionListener{
     private NetzplanView netzplanView;
 
     public NetzplanController() {
-        this.netzplan = new Netzplan();
+        try {
+            this.netzplan = this.erstelleNetzplan();
+        } catch (SQLException ex) {
+            Logger.getLogger(NetzplanController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.netzplanView = new NetzplanView(this);
     }
     
-    public void erstelleNetzplan() throws SQLException{
-        SQLConnect sqlConn = new SQLConnect();
-        ResultSet rsNetzplan = sqlConn.ladeNetzplan();
+    private Netzplan erstelleNetzplan() throws SQLException{
+        ResultSet rsNetzplan = new SQLConnect().ladeNetzplan();
+        this.netzplan = null;
         
+        while(rsNetzplan.next()) {
+            this.netzplan = new Netzplan((Integer)rsNetzplan.getObject("idNetzplan"), (String)rsNetzplan.getObject("nameNetzplan"));
+        }
+        
+        return this.netzplan;
     }
     
     public void actionPerformed(ActionEvent e) {

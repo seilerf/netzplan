@@ -69,6 +69,7 @@ public class SQLConnect {
     }
     
     public ResultSet ladeNetzplan() throws SQLException {
+        // Netzplan ID in der Abfrage dynamisch gestalten!!!
         String sqlQuery = "SELECT * FROM netzplan WHERE idNetzplan = 1";
         ResultSet rsNetzplan = this.getConnection().createStatement().executeQuery(sqlQuery);
         

@@ -1,6 +1,9 @@
 package edu.fh.application;
 
 import datenbank.SQLConnect;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import netzcontroller.NetzplanController;
 import netzview.StartView;
 
@@ -14,7 +17,6 @@ public class App
         
         //SQLConnect sql = new SQLConnect();
         NetzplanController netzplanCon = new NetzplanController();
-        netzplanCon.erstelleNetzplan();
         StartView startView = new StartView();
        // startView.pack();
         
