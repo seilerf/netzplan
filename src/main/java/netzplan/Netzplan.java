@@ -21,31 +21,21 @@ public class Netzplan extends Observable{
     private int ende;
     private LinkedList<Vorgang> vorgaenge;
 
-    public LinkedList<Vorgang> getVorgaenge() {
-        return vorgaenge;
-    }
-
     public Netzplan(int id, String name){
         this.id = id;
         this.name = name;
     }
     
-    public Netzplan(int anzahl, int start, int ende) {
-        this.anzahl = anzahl;
-        this.start = start;
-        this.ende = ende;
-        this.vorgaenge = new LinkedList<Vorgang>();
+    public Netzplan(){
+        
     }
-
-    public Netzplan() {
-        this.anzahl = 0;
-        this.start = 0;
-        this.ende = 0;
-        this.vorgaenge = new LinkedList<Vorgang>();
-    }
-
+    
     public String getName() {
         return name;
+    }
+    
+    public void setName(String name){
+        this.name = name;
     }
 
     public int getId() {
@@ -76,6 +66,10 @@ public class Netzplan extends Observable{
         this.ende = ende;
     }
 
+    public LinkedList<Vorgang> getVorgaenge() {
+        return vorgaenge;
+    }
+    
     public void setVorgaenge(LinkedList<Vorgang> vorgaenge) {
         this.vorgaenge = vorgaenge;
     }

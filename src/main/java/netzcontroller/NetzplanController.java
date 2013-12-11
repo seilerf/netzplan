@@ -6,8 +6,11 @@
 
 package netzcontroller;
 
+import datenbank.SQLConnect;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import netzplan.Netzplan;
 import netzview.NetzplanView;
 
@@ -25,7 +28,11 @@ public class NetzplanController implements ActionListener{
         this.netzplanView = new NetzplanView(this);
     }
     
-    
+    public void erstelleNetzplan() throws SQLException{
+        SQLConnect sqlConn = new SQLConnect();
+        ResultSet rsNetzplan = sqlConn.ladeNetzplan();
+        
+    }
     
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

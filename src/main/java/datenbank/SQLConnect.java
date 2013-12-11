@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package database;
+package datenbank;
 
 import java.sql.*;
 import java.util.Iterator;
@@ -36,7 +36,6 @@ public class SQLConnect {
             conn = DriverManager.getConnection(DATABASE_URL,USER,PWD);
             System.out.println("Verbindung hergestellt zu " + DATABASE_URL + "!");
             stmt = conn.createStatement();
-            this.ladeNetzplan();
             
         } 
         catch (ClassNotFoundException e) {
@@ -46,16 +45,6 @@ public class SQLConnect {
         catch (SQLException e) {
             System.out.println("Probleme mit SQL. Syntax korrekt? Passwort korrekt?");
             e.printStackTrace();
-        }
-        finally {
-            try {
-                stmt.close();
-                conn.close();
-            } 
-            catch (SQLException e) {
-                System.out.println("Problem beim Schliessen der Verbindung");
-                e.printStackTrace();
-            }
         }
     }
     
@@ -67,31 +56,23 @@ public class SQLConnect {
         return vorgaenge;
     }
     
-    public Netzplan ladeNetzplan() throws SQLException {
-        Netzplan netzplan = null;
+    public LinkedList<Netzplan> ladeAlleNetzplaene() throws SQLException{
+        LinkedList<Netzplan> netzplaene = new LinkedList<Netzplan>();
+        String sqlQuery = "SELECT * FROM netzplan";
+        ResultSet rsNetzplaene = this.getConnection().createStatement().executeQuery(sqlQuery);
+        
+        while(rsNetzplaene.next()){
+            netzplaene.add(new Netzplan((Integer)rsNetzplaene.getObject("idNetzplan"), (String)rsNetzplaene.getObject("nameNetzplan")));
+        }
+        
+        return netzplaene;
+    }
+    
+    public ResultSet ladeNetzplan() throws SQLException {
         String sqlQuery = "SELECT * FROM netzplan WHERE idNetzplan = 1";
         ResultSet rsNetzplan = this.getConnection().createStatement().executeQuery(sqlQuery);
         
-        LinkedList<Netzplan> netzplanList = new LinkedList<Netzplan>();
-        
-        try {
-            while (rsNetzplan.next())
-                netzplanList.add(new Netzplan((Integer) rsNetzplan.getObject("idNetzplan"), (String) rsNetzplan.getObject("nameNetzplan")));
-            
-            if (netzplanList.size() == 1)
-                netzplan = netzplanList.getFirst();
-            else {
-                //...
-            }
-            
-            netzplan.setVorgaenge(this.ladeVorgaenge(netzplan.getId()));
-            
-            return netzplan;
-        }
-        catch (NullPointerException e) {
-            e.printStackTrace();
-            return netzplan;
-        }
+        return rsNetzplan;
     }
     
     public LinkedList<Vorgang> ladeVorgaenge(int idNetzplan) throws SQLException {
