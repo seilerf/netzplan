@@ -29,6 +29,7 @@ public class StartView extends JFrame{
         this.setVisible(true);
         this.setSize(400, 400);
         this.setTitle("Netzplan");
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         JMenuBar menuBar = new JMenuBar();
         JMenu netzplanMenu = new JMenu("Netzplan");

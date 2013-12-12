@@ -52,9 +52,6 @@ public class NewNetzView extends JFrame implements Observer{
         Container inhalt = this.getContentPane();
         inhalt.setLayout(gbl);
         
-        //JLabel titel = new JLabel(controller.getVorgangName());
-      //  titel.setHorizontalAlignment(SwingConstants.CENTER);
-        
         // Textfelder erstellen, die die Daten beinhalten
         JTextField txtFAZ = new JTextField();
         txtFAZ.setBorder(new TitledBorder("Maximale Dauer"));
@@ -81,31 +78,28 @@ public class NewNetzView extends JFrame implements Observer{
         txtDauer.setHorizontalAlignment(SwingConstants.CENTER);
         txtDauer.setEditable(true);
         
-     
-        
         JButton btnEditSave = new JButton();
        
-            btnEditSave.setText("Speichern");
-            btnEditSave.addActionListener(controller);
-        
+        btnEditSave.setText("Speichern");
+        btnEditSave.addActionListener(controller);
             
-            JButton neuVorgang = new JButton();
+        JButton neuVorgang = new JButton();
        
-            neuVorgang.setText("Vorgänge anlegen");
-            neuVorgang.addActionListener(controller);
+        neuVorgang.setText("Vorgänge anlegen");
+        neuVorgang.addActionListener(controller);
             
         
-        // Zeichnen der Komponenten in das GUI
-        //                                        x  y    b  h    wx wy
-      //  addComponent(inhalt, gbl, titel,          0, 0,   3, 1,   0, 0);
-        addComponent(inhalt, gbl, txtFAZ,         0, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtDauer,       1, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtFEZ,         2, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSAZ,         0, 3,   1, 1,   3, 0);
-        //addComponent(inhalt, gbl, txtPuffer,      1, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSEZ,         2, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, btnEditSave,    1, 5,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, neuVorgang,    0, 5,   1, 1,   3, 0);
+        // Zeichnen der Komponenten auf Bildschirm x  y    b  h    wx wy
+        //---------------------------------------------------------------//
+        //addComponent(inhalt, gbl, titel,         0, 0,   3, 1,   0, 0);
+        addComponent(inhalt, gbl, txtFAZ,          0, 1,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtDauer,        1, 1,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtFEZ,          2, 1,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtSAZ,          0, 3,   1, 1,   3, 0);
+        //addComponent(inhalt, gbl, txtPuffer,     1, 3,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtSEZ,          2, 3,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, btnEditSave,     1, 5,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, neuVorgang,      0, 5,   1, 1,   3, 0);
     }
 
     
@@ -121,7 +115,7 @@ public class NewNetzView extends JFrame implements Observer{
      * @param weightx
      * @param weighty 
      */
-    private static void addComponent(Container cont,
+     private static void addComponent(Container cont,
                             GridBagLayout gbl,
                             Component c,
                             int x, int y,
@@ -130,9 +124,12 @@ public class NewNetzView extends JFrame implements Observer{
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = x; gbc.gridy = y;
-        gbc.gridwidth = width; gbc.gridheight = height;
-        gbc.weightx = weightx; gbc.weighty = weighty;
+        gbc.gridx = x; 
+        gbc.gridy = y;
+        gbc.gridwidth = width; 
+        gbc.gridheight = height;
+        gbc.weightx = weightx; 
+        gbc.weighty = weighty;
         gbc.ipadx = 20;
         gbc.ipady = 5;
         gbl.setConstraints(c, gbc);

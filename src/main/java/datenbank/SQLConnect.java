@@ -7,7 +7,6 @@
 package datenbank;
 
 import java.sql.*;
-import java.util.Iterator;
 import java.util.LinkedList;
 import netzplan.Netzplan;
 import netzplan.Vorgang;
@@ -59,11 +58,15 @@ public class SQLConnect {
     public LinkedList<Netzplan> ladeAlleNetzplaene() throws SQLException{
         LinkedList<Netzplan> netzplaene = new LinkedList<Netzplan>();
         String sqlQuery = "SELECT * FROM netzplan";
+        System.out.println("Lese Netzpläne aus Datenbank...");
         ResultSet rsNetzplaene = this.getConnection().createStatement().executeQuery(sqlQuery);
         
         while(rsNetzplaene.next()){
             netzplaene.add(new Netzplan((Integer)rsNetzplaene.getObject("idNetzplan"), (String)rsNetzplaene.getObject("nameNetzplan")));
         }
+        
+        System.out.println("Schließe Datenbank-Verbindung...");
+        this.conn.close();
         
         return netzplaene;
     }

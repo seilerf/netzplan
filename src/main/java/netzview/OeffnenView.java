@@ -51,44 +51,14 @@ public class OeffnenView extends JFrame implements Observer{
         
         Container inhalt = this.getContentPane();
         inhalt.setLayout(gbl);
-        
-        //JLabel titel = new JLabel(controller.getVorgangName());
-      //  titel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         // Textfelder erstellen, die die Daten beinhalten
-        
-        
         JTextField txtSAZ = new JTextField();
         txtSAZ.setBorder(new TitledBorder("Name"));
         txtSAZ.setHorizontalAlignment(SwingConstants.CENTER);
         txtSAZ.setEditable(true);
         
-        
-     
-        
-       // JButton btnEditSave = new JButton();
-       
-           // btnEditSave.setText("Speichern");
-           // btnEditSave.addActionListener(controller);
-        
-            
-           // JButton neuVorgang = new JButton();
-       
-           // neuVorgang.setText("Vorgänge anlegen");
-           // neuVorgang.addActionListener(controller);
-            
-        
-        // Zeichnen der Komponenten in das GUI
-        //                                        x  y    b  h    wx wy
-      //  addComponent(inhalt, gbl, titel,          0, 0,   3, 1,   0, 0);
-       // addComponent(inhalt, gbl, txtFAZ,         0, 1,   1, 1,   3, 0);
-       // addComponent(inhalt, gbl, txtDauer,       1, 1,   1, 1,   3, 0);
-       // addComponent(inhalt, gbl, txtFEZ,         2, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSAZ,         0, 3,   1, 1,   3, 0);
-        //addComponent(inhalt, gbl, txtPuffer,      1, 3,   1, 1,   3, 0);
-       // addComponent(inhalt, gbl, txtSEZ,         2, 3,   1, 1,   3, 0);
-       // addComponent(inhalt, gbl, btnEditSave,    1, 5,   1, 1,   1, 1);
-        //addComponent(inhalt, gbl, neuVorgang,    0, 5,   1, 1,   2, 2);
+        addComponent(inhalt, gbl, new NetzplanTabelle(),         0, 0,   0, 0,   0, 0);
     }
 
     
@@ -113,9 +83,12 @@ public class OeffnenView extends JFrame implements Observer{
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = x; gbc.gridy = y;
-        gbc.gridwidth = width; gbc.gridheight = height;
-        gbc.weightx = weightx; gbc.weighty = weighty;
+        gbc.gridx = x; 
+        gbc.gridy = y;
+        gbc.gridwidth = width; 
+        gbc.gridheight = height;
+        gbc.weightx = weightx; 
+        gbc.weighty = weighty;
         gbc.ipadx = 20;
         gbc.ipady = 5;
         gbl.setConstraints(c, gbc);
