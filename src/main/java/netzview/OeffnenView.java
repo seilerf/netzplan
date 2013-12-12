@@ -6,22 +6,31 @@
 
 package netzview;
 
+import datenbank.SQLConnect;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.GroupLayout;
+import static javax.swing.GroupLayout.Alignment.LEADING;
+import static javax.swing.GroupLayout.Alignment.TRAILING;
+import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import netzcontroller.NetzOeffnenController;
+import netzplan.Netzplan;
 
 /**
  *
@@ -33,66 +42,76 @@ public class OeffnenView extends JFrame implements Observer{
     
     public OeffnenView(NetzOeffnenController controller) {
         
-        this.editable = false;
-        this.setTitle("Netzplan Öffnen");
-        this.setSize(350, 200);
+        this.setTitle("Netzplan öffnen");
         
-        JMenuBar menu = new JMenuBar();
-        JMenu menuVorgang = new JMenu("Datei");
-        JMenuItem menuEnde = new JMenuItem("Schließen");
-        JMenuItem speichern = new JMenuItem("Speichern");
-        menuVorgang.add(menuEnde);
-        menuVorgang.add(speichern);
+        String[] columnNames = {"Netzplan ID",
+                                "Netzplanname"};
         
-        menu.add(menuVorgang);
-        this.setJMenuBar(menu);
+        Object[][] data = null;
         
-        GridBagLayout gbl = new GridBagLayout();
+        try {
+            LinkedList<Netzplan> netzplanListe = new SQLConnect().ladeAlleNetzplaene();
+            data = new Object[netzplanListe.size()][2];
+            
+            int i = 0;
+            for (Netzplan netzplan : netzplanListe) {
+                data[i][0] = netzplan.getId();
+                data[i][1] = netzplan.getName();
+                i++;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(OeffnenView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+ 
+        final JTable table = new JTable(data, columnNames);
+        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        table.setFillsViewportHeight(true);
         
-        Container inhalt = this.getContentPane();
-        inhalt.setLayout(gbl);
+        JScrollPane scrollpane = new JScrollPane(table);
+        JButton btnOeffnen = new JButton("Öffnen");
+        
+        btnOeffnen.addActionListener(new ActionListener() {
 
-        // Textfelder erstellen, die die Daten beinhalten
-        JTextField txtSAZ = new JTextField();
-        txtSAZ.setBorder(new TitledBorder("Name"));
-        txtSAZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtSAZ.setEditable(true);
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    System.out.println("Lade " + table.getValueAt(table.getSelectedRow(), 1) + "...");
+                    Netzplan netzplan = new SQLConnect().ladeNetzplan((Integer)table.getValueAt(table.getSelectedRow(), 0));
+                    System.out.println("Netzplan geladen!");                            
+                } catch(SQLException sqlE){
+                    System.out.println("Fehler bei der Datenbankabfrage: " + sqlE.getMessage());
+                } catch (ArrayIndexOutOfBoundsException npe) {
+                    System.out.println("Fehler: " + npe.getMessage());
+                }
+            }
+        });
         
-        addComponent(inhalt, gbl, new NetzplanTabelle(),         0, 0,   0, 0,   0, 0);
-    }
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
-    
-    /**
-     * 
-     * @param cont Container, in den das Objekt aufgenommen werden soll
-     * @param gbl LayoutManager
-     * @param c Objekt, das hinzugefügt werden soll
-     * @param x Punkt auf der x-Achse
-     * @param y Punkt auf der y-Achse
-     * @param width Breite des Objektes
-     * @param height Höhe des Objektes
-     * @param weightx
-     * @param weighty 
-     */
-    private static void addComponent(Container cont,
-                            GridBagLayout gbl,
-                            Component c,
-                            int x, int y,
-                            int width, int height,
-                            double weightx, double weighty){
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(LEADING)
+                    .addComponent(scrollpane)
+                    .addGroup(TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 323, Short.MAX_VALUE)
+                        .addComponent(btnOeffnen)))
+                .addContainerGap())
+        );
         
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = x; 
-        gbc.gridy = y;
-        gbc.gridwidth = width; 
-        gbc.gridheight = height;
-        gbc.weightx = weightx; 
-        gbc.weighty = weighty;
-        gbc.ipadx = 20;
-        gbc.ipady = 5;
-        gbl.setConstraints(c, gbc);
-        cont.add(c);
+        layout.setVerticalGroup(
+            layout.createParallelGroup(LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(scrollpane, PREFERRED_SIZE, 146, PREFERRED_SIZE)
+                .addPreferredGap(RELATED)
+                .addPreferredGap(RELATED)
+                .addComponent(btnOeffnen)
+                .addGap(0, 109, Short.MAX_VALUE))
+        );
+
+        pack();
     }
     
     public void update(Observable o, Object arg) {

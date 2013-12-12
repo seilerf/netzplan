@@ -25,26 +25,11 @@ public class NetzplanController implements ActionListener{
     private Netzplan netzplan;
     private NetzplanView netzplanView;
 
-    public NetzplanController() {
-        try {
-            this.netzplan = this.erstelleNetzplan();
-        } catch (SQLException ex) {
-            Logger.getLogger(NetzplanController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public NetzplanController(Netzplan netzplan) {
+        this.netzplan = netzplan;
         this.netzplanView = new NetzplanView(this);
     }
-    
-    private Netzplan erstelleNetzplan() throws SQLException{
-        ResultSet rsNetzplan = new SQLConnect().ladeNetzplan();
-        this.netzplan = null;
         
-        while(rsNetzplan.next()) {
-            this.netzplan = new Netzplan((Integer)rsNetzplan.getObject("idNetzplan"), (String)rsNetzplan.getObject("nameNetzplan"));
-        }
-        
-        return this.netzplan;
-    }
-    
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

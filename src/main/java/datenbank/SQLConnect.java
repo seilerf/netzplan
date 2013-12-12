@@ -71,12 +71,17 @@ public class SQLConnect {
         return netzplaene;
     }
     
-    public ResultSet ladeNetzplan() throws SQLException {
+    public Netzplan ladeNetzplan(int id) throws SQLException {
         // Netzplan ID in der Abfrage dynamisch gestalten!!!
         String sqlQuery = "SELECT * FROM netzplan WHERE idNetzplan = 1";
         ResultSet rsNetzplan = this.getConnection().createStatement().executeQuery(sqlQuery);
+        Netzplan netzplan = null;
         
-        return rsNetzplan;
+        while(rsNetzplan.next()){
+            netzplan = new Netzplan((Integer)rsNetzplan.getObject("idNetzplan"), (String)rsNetzplan.getObject("nameNetzplan"));
+        }
+        
+        return netzplan;
     }
     
     public LinkedList<Vorgang> ladeVorgaenge(int idNetzplan) throws SQLException {

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import netzcontroller.NetzplanController;
+import netzplan.Netzplan;
 import netzview.StartView;
 
 
@@ -16,7 +17,7 @@ public class App
         final int MAX=50;
         
         //SQLConnect sql = new SQLConnect();
-        NetzplanController netzplanCon = new NetzplanController();
+        NetzplanController netzplanCon = new NetzplanController(new Netzplan());
         StartView startView = new StartView();
        // startView.pack();
         
