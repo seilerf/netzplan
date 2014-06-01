@@ -11,23 +11,58 @@ import java.util.Observable;
 
 /**
  *
- * @author fseiler
+ * @author fseiler/ M.Ullmann
  */
 public class Netzplan extends Observable{
     private String name;
     private int id;
     private int anzahl;
-    private int start;
-    private int ende;
+    private double start;
+    private double ende;
+    private double gesamtPuffer;
+    private double freierPuffer;
+
+    
+    /**
+     * Default Konstruktor
+     */
+    public Netzplan() {
+        
+    }
+    
+    /**
+     * Konstruktur für den Netzplan
+     */
+    public Netzplan(int id, String name, double startZeit, double endZeit){
+        this.id = id;
+        this.name = name;
+        this.start = startZeit;
+        this.ende = endZeit;
+        this.gesamtPuffer = 0;
+        this.freierPuffer = 50;
+    }
+    
+    
+    public double getGesamtPuffer() {
+        return gesamtPuffer;
+    }
+
+    public void setGesamtPuffer(double gesamtPuffer) {
+        this.gesamtPuffer = gesamtPuffer;
+    }
+
+    public double getFreierPuffer() {
+        return freierPuffer;
+    }
+
+    public void setFreierPuffer(double freierPuffer) {
+        this.freierPuffer = freierPuffer;
+    }
     private LinkedList<Vorgang> vorgaenge;
 
     public Netzplan(int id, String name){
         this.id = id;
         this.name = name;
-    }
-    
-    public Netzplan(){
-        
     }
     
     public String getName() {
@@ -50,19 +85,19 @@ public class Netzplan extends Observable{
         this.anzahl = anzahl;
     }
 
-    public int getStart() {
+    public double getStart() {
         return start;
     }
 
-    public void setStart(int start) {
+    public void setStart(double start) {
         this.start = start;
     }
 
-    public int getEnde() {
+    public double getEnde() {
         return ende;
     }
 
-    public void setEnde(int ende) {
+    public void setEnde(double ende) {
         this.ende = ende;
     }
 

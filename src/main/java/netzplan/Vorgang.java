@@ -14,6 +14,8 @@ import java.util.Observable;
  */
 public class Vorgang extends Observable {
     
+    private int vorgangId;
+    private int netzRefId;
     private String name;
     private double dauer;
     // Frühester Anfangszeitpunkt
@@ -29,14 +31,25 @@ public class Vorgang extends Observable {
     // Nachfolger
     private Vorgang[] nachf;
 
-    public Vorgang(String name, double dauer) {
+    public Vorgang(int vorgId, String name, double dauer) {
+        this.vorgangId = vorgId;
         this.name = name;
         this.dauer = dauer;
         this.nachf = null;
         this.vorgaenger = null;
     }
     
-    public Vorgang(){
+    public Vorgang(String name, double dauer, int netzRefId) {
+        this.name = name;
+        this.dauer = dauer;
+        this.netzRefId = netzRefId;
+    }
+    
+    public Vorgang(int id) {
+        this.vorgangId = id;
+    }
+    
+    public Vorgang() {
         this.name = "";
         this.dauer = 0.0;
         this.faz = 0.0;
@@ -50,6 +63,22 @@ public class Vorgang extends Observable {
         this.faz = 0.0;
         this.sez = 0.0;
         this.nachf = null;
+    }
+    
+    public int getVorgangId() {
+        return vorgangId;
+    }
+
+    public void setVorgangId(int vorgangId) {
+        this.vorgangId = vorgangId;
+    }
+
+    public int getNetzRefId() {
+        return netzRefId;
+    }
+
+    public void setNetzRefId(int netzRefId) {
+        this.netzRefId = netzRefId;
     }
 
     public String getName() {

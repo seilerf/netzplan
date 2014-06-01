@@ -6,90 +6,97 @@
 
 package edu.fh.application;
 
+import datenbank.SQLConnect;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import netzplan.Netzplan;
+import netzplan.Vorgang;
+
 /**
  *
- * @author fseiler
+ * @author M.Ullmann
  */
 public class Netzplanung {
+    //Alle Netzplaene sind auf maximal 50 Vorgänge beschränkt
+    final int MAX = 50;
+    private final SQLConnect con = new SQLConnect();
+    //Vorgangsdauer
+    private double[] dauer;
+    //frühester Vorgangsbeginn
+    private double[] fAnf;
+    //spätestes Vorgangsende
+    private double[] sEnde;
+    private boolean[][] nachf;
     
-    public static void main(String[] args) {
+    private Netzplan netz;
+    private double startZeit;
+    private double endZeit;
+    private int anzahl;
+    
+    LinkedList<Vorgang> vorgangList;
+    
+    public Netzplanung(int idNetzplan) throws SQLException {
+        int refId = con.checkNetzplanId();
         
-        //Anzahl möglicher Vorgänge
-        final int MAX=50;
-        //Vorgangsdauer
-        double[] dauer = new double[MAX];
-        //frühester Vorgangsbeginn
-        double[] fAnf = new double[MAX];
-        //spätestes Vorgangsende
-        double[] sEnde = new double[MAX];
-        
-        boolean[][] nachf = new boolean[MAX][MAX];
-        int g, h, i, j, k, m; //Laufvariablen
-        
-        // Initialisierung des Netzplans
-        int startZeit = 0;
-        int endZeit = 20;
-        
-// Anzahl der Vorgänge im Netzplan
-        int anzahl = 5;
-        dauer[0] = 1;
-        dauer[1] = 3;
-        dauer[2] = 2;
-        dauer[3] = 5;
-        dauer[4] = 2;
-        
-        for (g=0; g<anzahl; ++g){
-            fAnf[g] = 0.0;
-            sEnde[g] = 0.0;
+        if(idNetzplan <= refId) {
+            this.netz = con.ladeNetzplan(refId);
+            this.netz.setGesamtPuffer(vorgangList.size());
+            this.netz.setFreierPuffer(MAX-vorgangList.size());
+            this.vorgangList = new LinkedList<Vorgang>(con.ladeVorgaenge(idNetzplan));
+            this.anzahl = vorgangList.size();
+            this.dauer = new double[MAX];
+            this.fAnf = new double[MAX];
+            this.sEnde = new double[MAX];
+            this.startZeit = this.netz.getStart();
+            this.endZeit = this.netz.getEnde();
             
-            for (h=0; h<anzahl; ++h){
-                nachf[g][h] = false;
+            
+            
+            for(int i = 0;i < this.anzahl; ++i) {
+                this.dauer[i] = this.vorgangList.get(i).getDauer();
             }
-        }
-        
-        // Abhängigkeiten setzen
-        nachf[0][1] = true;
-        nachf[0][2] = true;
-        nachf[1][4] = true;
-        nachf[3][4] = true;
-        
-        // fruehester Anfangszeitpunkt
-        for (i=0; i<anzahl; ++i){
-            // Maximum der fruhesten Endzeitpunkte aller Vorgänger durch Vorwärtsrechnen
-            fAnf[i] = startZeit;
-            for (j=0; j<anzahl; ++j){
-                if (true == nachf[i][j]){
-                    double fEnd = fAnf[j] + dauer[j];
-                    if(fEnd > fAnf[i]){
-                        fAnf[i] = fEnd;
-                    }
+            
+            for(int g = 0;g < anzahl; ++g) {
+                this.fAnf[g] = 0.0;
+                this.sEnde[g] = 0.0;
+                
+                for(int h = 0;h < anzahl; ++h) {
+                    nachf[g][h] = false;
                 }
             }
-        }
-        
-        //spätesten Endzeitpunkt ermitteln
-        for (i=anzahl-1; i>-1; --i){
-            // Minimum der spätesten Anfangszeitpunkte der Nachfolger durch Rückwärtsrechnung
-            sEnde[i] = endZeit;
-            for(j=0; j<anzahl; ++j){
-                if (true == nachf[i][j]){
-                    double sAnf = sEnde[j] - dauer[j];
-                    if (sEnde[i] > sAnf){
-                        sEnde[i] = sAnf;
-                    }
-                }
-            }
-        }
-        
-        // Ausgabe des Netzplans
-        for (m=0; m<anzahl; ++m){
-            System.out.println(
-                "V" + m+1 +": [FA, FE]: ["
-                + fAnf[m] + ".. "
-                + (fAnf[m] + dauer[m])
-                + "], [SA, SE]: ["
-                + sEnde[m] + "]\n");
-        }
-        System.out.println("\n");
+        } else {
+            System.out.println("Die Netzplanung kann nicht durchgeführt werden!\n");
+        } 
     }
+    
+    /**
+     * 
+     * @throws SQLException 
+     */
+    public void netzPlanBerechnung() throws SQLException {
+        // Abhängigkeiten setzen
+        for(int i = 0;i < anzahl; ++i) {
+            int fieldOne = this.vorgangList.get(i).getVorgangId();
+            LinkedList<Vorgang> nachFolger = new LinkedList<Vorgang>(this.con.ladeAlleNachf(fieldOne));
+            for(int j = 0;j <  this.vorgangList.get(i).getNachf().length; ++j) {
+                int fieldTwo = nachFolger.get(j).getVorgangId();
+                this.nachf[fieldOne][fieldTwo] = true;
+            }
+        }
+        
+        //fruehster Anfangszeitpunkt
+        for(int k = 0;k < anzahl; ++k) {
+            this.vorgangList.get(k).setFaz(this.startZeit);
+            for(int l = 0;l < anzahl; ++l) {
+                if(true == nachf[k][l]) {
+                    
+                }
+            }
+        }
+        
+        //
+    }
+
+
+        
 }
