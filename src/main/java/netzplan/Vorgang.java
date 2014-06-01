@@ -37,6 +37,8 @@ public class Vorgang extends Observable {
         this.dauer = dauer;
         this.nachf = null;
         this.vorgaenger = null;
+        this.faz = 0.0;
+        this.sez = 0.0;
     }
     
     public Vorgang(String name, double dauer, int netzRefId) {

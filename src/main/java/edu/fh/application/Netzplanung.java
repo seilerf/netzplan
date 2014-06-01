@@ -70,31 +70,63 @@ public class Netzplanung {
     }
     
     /**
-     * 
+     * Anpassung nötig bezüglich VorgangsListe und sortierteVorgaenge!!!!!
      * @throws SQLException 
      */
     public void netzPlanBerechnung() throws SQLException {
         // Abhängigkeiten setzen
+        LinkedList<Vorgang> sortierteVorgaenge = new LinkedList<Vorgang>();
+        LinkedList<Vorgang> nachfolger = new LinkedList<Vorgang>();
+        LinkedList<Vorgang> vorgaenger = new LinkedList<Vorgang>();
         for(int i = 0;i < anzahl; ++i) {
             int fieldOne = this.vorgangList.get(i).getVorgangId();
-            LinkedList<Vorgang> nachFolger = new LinkedList<Vorgang>(this.con.ladeAlleNachf(fieldOne));
+            LinkedList<Vorgang> nachfolgerForOne = new LinkedList<Vorgang>(this.con.ladeAlleNachf(fieldOne));
+            nachfolger.addAll(nachfolgerForOne);
+            LinkedList<Vorgang> vorgaengerForOne = new LinkedList<Vorgang>(this.con.ladeAlleNachf(fieldOne));
+            vorgaenger.addAll(vorgaengerForOne);
+            sortierteVorgaenge.add(this.vorgangList.get(i));
             for(int j = 0;j <  this.vorgangList.get(i).getNachf().length; ++j) {
-                int fieldTwo = nachFolger.get(j).getVorgangId();
+                int fieldTwo = nachfolger.get(j).getVorgangId();
+                sortierteVorgaenge.add(nachfolger.get(j));
                 this.nachf[fieldOne][fieldTwo] = true;
             }
         }
         
-        //fruehster Anfangszeitpunkt
+        //Berechnung der fruehsten Anfangszeitpunkte
         for(int k = 0;k < anzahl; ++k) {
             this.vorgangList.get(k).setFaz(this.startZeit);
             for(int l = 0;l < anzahl; ++l) {
                 if(true == nachf[k][l]) {
-                    
+                    double fEnd = nachfolger.get(l).getDauer() + nachfolger.get(l).getFaz();
+                    if(fEnd > vorgangList.get(k).getFaz()) {
+                        vorgangList.get(k).setFaz(fEnd); 
+                    }
                 }
             }
         }
         
-        //
+        //Berechnung der spaetesten Endzeitpunkte
+        for(int n = anzahl-1;n > -1; --n) {
+            this.vorgangList.get(n).setSez(this.endZeit);
+           
+            for(int m = 0;m < anzahl; ++m) {
+                if(true == nachf[n][m]) {
+                    double sAnf = vorgaenger.get(m).getSez() - vorgaenger.get(m).getDauer();
+                    if(vorgangList.get(n).getSez() > sAnf) {
+                        vorgangList.get(n).setSez(sAnf);
+                    }
+                }
+            }
+        }
+        
+        for(int f = 0;f < anzahl; ++f) {
+            vorgangList.get(f).setFez(vorgangList.get(f).getFaz() + vorgangList.get(f).getDauer());
+        }
+        double refEndZeit = this.endZeit;
+        for(int f = anzahl-1;f > -1; --f) {
+            vorgangList.get(f).setSaz(refEndZeit - vorgangList.get(f).getDauer());
+            refEndZeit -= vorgangList.get(f).getDauer();
+        }
     }
 
 
