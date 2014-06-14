@@ -6,6 +6,7 @@
 
 package netzplan;
 
+import java.util.LinkedList;
 import java.util.Observable;
 
 /**
@@ -27,9 +28,9 @@ public class Vorgang extends Observable {
     // Spätester Endzeitpunkt
     private double sez;
     // Vorgänger
-    private Vorgang[] vorgaenger;
+    private LinkedList<Vorgang> vorgaenger;
     // Nachfolger
-    private Vorgang[] nachf;
+    private LinkedList<Vorgang> nachf;
 
     public Vorgang(int vorgId, String name, double dauer) {
         this.vorgangId = vorgId;
@@ -130,28 +131,31 @@ public class Vorgang extends Observable {
     public void setSez(double sez) {
         this.sez = sez;
     }
-
-    public Vorgang[] getVorgaenger() {
-        return vorgaenger;
-    }
-
-    public void setVorgaenger(Vorgang[] vorgaenger) {
-        this.vorgaenger = vorgaenger;
-    }
-
-    public Vorgang[] getNachf() {
-        return nachf;
-    }
-
-    public void setNachf(Vorgang[] nachf) {
-        this.nachf = nachf;
-    }
-    
-    
     
     public double getFEZ() {
         // Evtl. Fehlberechnung abfangen, wenn noch kein fAnfang initialisiert
         return (this.faz + this.dauer);
+    }
+    
+    public LinkedList<Vorgang> getVorgaenger() {
+        return vorgaenger;
+    }
+
+    public void setVorgaenger(LinkedList<Vorgang> vorgaenger) {
+        for(int i=0; i<vorgaenger.size(); ++i) {
+            this.vorgaenger.add(vorgaenger.get(i));
+        }
+    }
+
+    public LinkedList<Vorgang> getNachf() {
+        return nachf;
+    }
+
+    public void setNachf(LinkedList<Vorgang> nachf) {
+        for(int i=0; i<nachf.size(); ++i) {
+            this.nachf.add(nachf.get(i));
+        }
+            
     }
     
 }
