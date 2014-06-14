@@ -36,8 +36,8 @@ public class Vorgang extends Observable {
         this.vorgangId = vorgId;
         this.name = name;
         this.dauer = dauer;
-        this.nachf = null;
-        this.vorgaenger = null;
+        this.nachf = new LinkedList<Vorgang>();
+        this.vorgaenger = new LinkedList<Vorgang>();
         this.faz = 0.0;
         this.sez = 0.0;
     }

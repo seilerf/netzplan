@@ -14,9 +14,18 @@ public class App
     public static void main(String[] args) {
         
         SQLConnect sql = new SQLConnect();
+        Netzplan netz = new Netzplan();
+        Netzplanung netzPl; 
         
-       //try {
-            
+        
+        
+       try {
+           netz = sql.ladeNetzplan(1);
+           System.out.println("Die geladene NetzplanID:"+netz.getId());
+           netzPl = new Netzplanung(netz.getId());
+           netzPl.netzPlanBerechnung();
+           
+           
             /**Test 1: Funktion ==> ladeAlleNetzplaene()
              * sql.ladeAlleNetzplaene();  
              * ->   Done
@@ -99,12 +108,11 @@ public class App
             * ->    Done
             */
            
-           
-           
+
             
-      //  } catch (SQLException ex) {
-      //      Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-       //}
+       } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+       }
         
         
             //NetzplanController netzplanCon = new NetzplanController(new Netzplan());

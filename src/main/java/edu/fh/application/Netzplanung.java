@@ -20,7 +20,7 @@ public class Netzplanung {
     //Alle Netzplaene sind auf maximal 50 Vorgänge beschränkt
     final int MAX = 50;
     private boolean checkField;
-    private final SQLConnect con = new SQLConnect();
+    private final SQLConnect con = new SQLConnect();;
     //Vorgangsdauer
     private double[] dauer;
     //frühester Vorgangsbeginn
@@ -38,14 +38,18 @@ public class Netzplanung {
     private LinkedList<Vorgang> initVorgang;
     LinkedList<Vorgang> sortierteVorgaenge = new LinkedList<Vorgang>();
     
+    //Default Konstruktor
+
+    
     public Netzplanung(int idNetzplan) throws SQLException {
-        int refId = con.checkNetzplanId();
         
-        if(idNetzplan <= refId) {
-            this.netz = con.ladeNetzplan(refId);
+        if(con.checkNetzplanId(idNetzplan)==true) {
+            this.netz = con.ladeNetzplan(idNetzplan);
+            vorgangList = this.con.ladeVorgaenge(idNetzplan);
             this.netz.setGesamtPuffer(vorgangList.size());
             this.netz.setFreierPuffer(MAX-vorgangList.size());
             this.vorgangList = new LinkedList<Vorgang>(con.ladeVorgaenge(idNetzplan));
+            this.initVorgang = new LinkedList<Vorgang>();
             this.anzahl = vorgangList.size();
             
             //this.dauer = new double[MAX];
@@ -72,6 +76,7 @@ public class Netzplanung {
             System.out.println("Die Netzplanung kann nicht durchgeführt werden!\n");
         } 
     }
+
     
     /**
      * Anpassung nötig bezüglich VorgangsListe und sortierteVorgaenge!!!!!
@@ -96,6 +101,11 @@ public class Netzplanung {
                 }
             }
         }
+        
+        for(int l=0; l< sortierteVorgaenge.size(); ++l){
+            System.out.println("Die Vorgaenge aus der sortierten Liste:"+ sortierteVorgaenge.get(l).getVorgangId());
+            
+        } 
         /**
         for(int i = 0;i < anzahl; ++i) {
             int fieldOne = this.vorgangList.get(i).getVorgangId();
@@ -149,6 +159,11 @@ public class Netzplanung {
         } */
     } 
     
+    /**
+     * 
+     * @param vorgangId
+     * @return 
+     */
     public boolean listIdCheck(int vorgangId) {
         this.checkField = false;
         for(int i=0; i<sortierteVorgaenge.size(); ++i) {
@@ -159,11 +174,19 @@ public class Netzplanung {
         return checkField;
     }
     
+    /**
+     * 
+     * @param vorgang
+     * @return 
+     */
     public LinkedList<Vorgang> defineOrdersFirst(LinkedList<Vorgang> vorgang) {
-        for(int i=0; i<anzahl; ++i) {
-            if(vorgangList.get(i).getVorgaenger().size()==0) {
-                this.initVorgang.add(vorgangList.get(i));
+        if(vorgang.size()!=0) {
+        for(int i=0; i<vorgang.size(); ++i) {
+            if(vorgang.get(i).getVorgaenger().size()==0) {
+                this.initVorgang.add(vorgang.get(i));
+                System.out.println("Einen Vorgang hinzugefügt zur initVorgangList!\n");
             }
+          }
         }
         return initVorgang;
     }

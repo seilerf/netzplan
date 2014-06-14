@@ -29,6 +29,7 @@ public class SQLConnect {
     
     private Connection conn;
     private LinkedList<Vorgang> vorgaenge;
+    private boolean netzPlanCheck;
 
     public SQLConnect() {
         this.conn = null;  
@@ -201,21 +202,21 @@ public class SQLConnect {
      */
     public void insertVorgang(String name, double dauer, int netzRefId) throws SQLException {
 
-        this.startConnection();
+        if(this.checkNetzplanId(netzRefId)==true) {
+            
+            this.startConnection();
+            String sqlQuery = "SELECT * FROM vorgang;";
+            ResultSet rsVorgang = this.getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery(sqlQuery);
         
-        if(netzRefId <= this.checkNetzplanId()) {
-        String sqlQuery = "SELECT * FROM vorgang;";
-        ResultSet rsVorgang = this.getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery(sqlQuery);
-        
-        rsVorgang.next();
-        rsVorgang.moveToInsertRow();
-        rsVorgang.updateInt("Netzplan_idNetzplan", netzRefId);
-        rsVorgang.updateString("nameVorgang", name);
-        rsVorgang.updateDouble("dauer", dauer);
+            rsVorgang.next();
+            rsVorgang.moveToInsertRow();
+            rsVorgang.updateInt("Netzplan_idNetzplan", netzRefId);
+            rsVorgang.updateString("nameVorgang", name);
+            rsVorgang.updateDouble("dauer", dauer);
       
-        rsVorgang.insertRow();
-        System.out.println("Insertion des Vorgangs erfolgreich umgesetzt!!\n");
-        rsVorgang.close();
+            rsVorgang.insertRow();
+            System.out.println("Insertion des Vorgangs erfolgreich umgesetzt!!\n");
+            rsVorgang.close();
         } else {
             System.out.println("Der Eingabewert zur Netzplan-Id exisitert nicht!\n");
         }
@@ -224,17 +225,35 @@ public class SQLConnect {
     
     /**
      * Funktion zum Überprüfen der Existenz der NetzplanId
+     * @param netzplanId
      * @return 
+     * @throws java.sql.SQLException 
      */
-    public int checkNetzplanId() throws SQLException {
-        int netzPlanCount=0;
-        String sqlQuery = "SELECT * FROM Netzplan;";
-        ResultSet rsNetzp = this.getConnection().createStatement().executeQuery(sqlQuery);
-       
-        rsNetzp.last();
-        netzPlanCount = rsNetzp.getRow();
+    public boolean checkNetzplanId(int netzplanId) throws SQLException {
+        this.netzPlanCheck = false;
+        LinkedList<Netzplan> netzplanList = new LinkedList<Netzplan>();
+        this.startConnection();
+        String sqlQuery = "SELECT * FROM netzplan;";
+        ResultSet rsNetzp = this.getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery(sqlQuery);
+        
+        
+        if(rsNetzp != null) {
+            while(rsNetzp.next()==true) {
+                Netzplan netzplan = new Netzplan ((Integer) rsNetzp.getObject("idNetzplan"), (String) rsNetzp.getObject("nameNetzplan"), (Double) rsNetzp.getObject("startZeit"), (Double) rsNetzp.getObject("endZeit"));
+                netzplanList.add(netzplan);
+            }
+        }
+        
+        
+        
+        for(int i=0; i< netzplanList.size(); ++i) {
+            if(netzplanId == netzplanList.get(i).getId()) {
+               netzPlanCheck = true; 
+            }
+        }
         rsNetzp.close();
-        return netzPlanCount;
+        this.closeConnection();
+        return netzPlanCheck;
     }
     
     /**
