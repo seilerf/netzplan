@@ -8,7 +8,9 @@ package edu.fh.application;
 
 import datenbank.SQLConnect;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import netzplan.Netzplan;
 import netzplan.Vorgang;
 
@@ -20,7 +22,8 @@ public class Netzplanung {
     //Alle Netzplaene sind auf maximal 50 Vorgänge beschränkt
     final int MAX = 50;
     private boolean checkField;
-    private final SQLConnect con = new SQLConnect();;
+    private final SQLConnect con = new SQLConnect();
+    private int refInitSize;
     //Vorgangsdauer
     private double[] dauer;
     //frühester Vorgangsbeginn
@@ -88,24 +91,72 @@ public class Netzplanung {
         //LinkedList<Vorgang> nachfolger = new LinkedList<Vorgang>();
        // LinkedList<Vorgang> vorgaenger = new LinkedList<Vorgang>();
         this.defineOrdersFirst(vorgangList);
+        this.refInitSize = initVorgang.size();
+        System.out.println("Größe der refInitSize:" +initVorgang.size());
+        
         for(int i=0; i< this.initVorgang.size(); ++i) {
             if(this.listIdCheck(initVorgang.get(i).getVorgangId())==false) {
+                
+                System.out.println("Kommen wir bei den Init-Vorgaengen rein?!");
+                
                 sortierteVorgaenge.add(initVorgang.get(i));
+                System.out.println("Id des InitVorgang:"+initVorgang.get(i).getVorgangId());
+                //Hier weitermachen morgen die Vorgaenge nach den Initvorgaengen bekommen nicht die richtige Dauer mitübergeben!!
+                System.out.println("Dauer des InitVorgang:"+initVorgang.get(i).getDauer());
             }
         }
+        
+        
         for(int j=0; j<sortierteVorgaenge.size(); ++j) {
             sortierteVorgaenge.get(j).setNachf(con.ladeAlleNachf(sortierteVorgaenge.get(j).getVorgangId()));
             for(int k=0; k< sortierteVorgaenge.get(j).getNachf().size(); ++k) {
                 if(this.listIdCheck(sortierteVorgaenge.get(j).getNachf().get(k).getVorgangId())==false) {
                     sortierteVorgaenge.add(sortierteVorgaenge.get(j).getNachf().get(k));
+                    System.out.println("Der Vorgang mit der Id:"+sortierteVorgaenge.get(j).getNachf().get(k).getVorgangId()+" wurde hinzugefügt");
+                     System.out.println("Der Vorgang hat die Dauer:"+sortierteVorgaenge.get(j).getNachf().get(k).getDauer()+" !!!");
                 }
             }
         }
         
-        for(int l=0; l< sortierteVorgaenge.size(); ++l){
-            System.out.println("Die Vorgaenge aus der sortierten Liste:"+ sortierteVorgaenge.get(l).getVorgangId());
-            
-        } 
+        for(int l=0; l<sortierteVorgaenge.size(); ++l) {
+            if(l<this.refInitSize) {
+                sortierteVorgaenge.get(l).setFez(sortierteVorgaenge.get(l).getDauer());
+            } 
+            if(l>refInitSize) {
+                System.out.println("Gehen wir hier rein?!\n");
+                LinkedList<Vorgang> vorgaengerCash = new LinkedList<Vorgang>();
+                vorgaengerCash = con.ladeAlleVorg(sortierteVorgaenge.get(l).getVorgangId());  
+                double minSt = vorgaengerCash.get(0).getFez();
+                
+                for(int p=0; p<vorgaengerCash.size(); ++p) {
+                    double minRef = vorgaengerCash.get(p).getFez();
+                    
+                    if(minRef < minSt) {
+                        minSt = minRef;
+                    }
+                    
+                   /** if(vorgaengerCash.get(p).getFez() < vorgaengerCash.get(p+1).getFez()) {
+ 
+                       sortierteVorgaenge.get(l).setFaz(vorgaengerCash.get(p).getFez());
+                       System.out.println("Die Übergebene früheste Endzeit nach den Init-Vorgaengen lautet:" +sortierteVorgaenge.get(l).getFaz());
+                    } else {
+                        sortierteVorgaenge.get(l).setFez(vorgaengerCash.get(p+1).getFez());
+                        System.out.println("Die Übergebene früheste Endzeit nach den Init-Vorgaengen lautet:" +sortierteVorgaenge.get(p).getFaz());
+                    }*/
+                    
+                    System.out.println("Die früheste Anfangszeit wurde gesetzt!\n");
+                    System.out.println("Der Wert der Anfangszeit beträgt:" + sortierteVorgaenge.get(l).getFaz());
+                    sortierteVorgaenge.get(l).setFaz(minSt);
+                    System.out.println("Die früheste Endzeit wurde gesetzt\n");
+                    System.out.println("Der Wert für die früheste Endzeit beträgt:" + sortierteVorgaenge.get(l).getFez());
+                    sortierteVorgaenge.get(l).setFez(sortierteVorgaenge.get(l).getFaz() + sortierteVorgaenge.get(l).getDauer());
+                    
+                }
+                
+                //sortierteVorgaenge.get(l).setFaz(sortierteVorgaenge.get(l-1).getFez());
+            }
+        }
+  
         /**
         for(int i = 0;i < anzahl; ++i) {
             int fieldOne = this.vorgangList.get(i).getVorgangId();
@@ -179,12 +230,12 @@ public class Netzplanung {
      * @param vorgang
      * @return 
      */
-    public LinkedList<Vorgang> defineOrdersFirst(LinkedList<Vorgang> vorgang) {
+    public LinkedList<Vorgang> defineOrdersFirst(LinkedList<Vorgang> vorgang) throws SQLException {
         if(vorgang.size()!=0) {
         for(int i=0; i<vorgang.size(); ++i) {
-            if(vorgang.get(i).getVorgaenger().size()==0) {
+            if(con.ladeAlleVorg(vorgang.get(i).getVorgangId()).size()==0) {
+                vorgang.get(i).setFaz(0);
                 this.initVorgang.add(vorgang.get(i));
-                System.out.println("Einen Vorgang hinzugefügt zur initVorgangList!\n");
             }
           }
         }

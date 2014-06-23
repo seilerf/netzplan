@@ -43,7 +43,6 @@ public class SQLConnect {
         try {
             Class.forName(JDBC_DRIVER);
             this.conn = DriverManager.getConnection(DATABASE_URL,USER,PWD);
-            System.out.println("Verbindung hergestellt zu " + DATABASE_URL + "!");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SQLConnect.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -91,14 +90,9 @@ public class SQLConnect {
         
         while(rsNetzplaene.next()) {
         Netzplan netzplan = new Netzplan((Integer)rsNetzplaene.getObject("idNetzplan"), (String)rsNetzplaene.getObject("nameNetzplan"), (Double)rsNetzplaene.getObject("startZeit"), (Double)rsNetzplaene.getObject("endZeit"));
-           netzplaene.add(netzplan);
-            System.out.println("NetzplanID:" +netzplan.getId());
-            System.out.println("NetzplanName:" +netzplan.getName());
-            System.out.println("Startzeit:" +netzplan.getGesamtPuffer());
-            System.out.println("Endzeit:" +netzplan.getFreierPuffer());        
+           netzplaene.add(netzplan);      
         }
         rsNetzplaene.close();
-        System.out.println("Schließe Datenbank-Verbindung...");
         this.closeConnection();
         
         return netzplaene;
@@ -118,11 +112,7 @@ public class SQLConnect {
         
         while(rsNetzplan.next()){
             netzplan = new Netzplan((Integer)rsNetzplan.getObject("idNetzplan"), (String)rsNetzplan.getObject("nameNetzplan"), (Double)rsNetzplan.getObject("startZeit"), (Double)rsNetzplan.getObject("endZeit"));
-        
-            System.out.println("NetzplanID:" +netzplan.getId());
-            System.out.println("NetzplanName:" +netzplan.getName());
-            System.out.println("Startzeit:" +netzplan.getGesamtPuffer());
-            System.out.println("Endzeit:" +netzplan.getFreierPuffer());
+
         }
         rsNetzplan.close();
         this.closeConnection();
@@ -149,7 +139,6 @@ public class SQLConnect {
         rsNetzplan.updateDouble("startZeit", startZeit);
         rsNetzplan.updateDouble("endZeit", endZeit);
         rsNetzplan.insertRow();
-        System.out.println("Insertion eines Netzplanes erfolgreich umgesetzt!!\n");
         rsNetzplan.close();
         this.closeConnection();
     }
@@ -168,7 +157,6 @@ public class SQLConnect {
         LinkedList<Vorgang> vorgaenge = new LinkedList<Vorgang>();
         while(rsVorgaenge.next()){
             vorgaenge.add(new Vorgang((Integer) rsVorgaenge.getObject("idVorgang"), (String) rsVorgaenge.getObject("nameVorgang"), (Double) rsVorgaenge.getObject("dauer")));
-            System.out.println(rsVorgaenge.getObject("nameVorgang"));
         }
         rsVorgaenge.close();
         this.closeConnection();
@@ -215,7 +203,6 @@ public class SQLConnect {
             rsVorgang.updateDouble("dauer", dauer);
       
             rsVorgang.insertRow();
-            System.out.println("Insertion des Vorgangs erfolgreich umgesetzt!!\n");
             rsVorgang.close();
         } else {
             System.out.println("Der Eingabewert zur Netzplan-Id exisitert nicht!\n");
@@ -273,7 +260,6 @@ public class SQLConnect {
         }
         rsBetrMittel.close();
         this.closeConnection();
-        System.out.println("Betriebsmittelgruppen geladen ...\n");
         return betriebsMittel;
     }
     
@@ -294,7 +280,6 @@ public class SQLConnect {
         }
         rsBetrMittel.close();
         this.closeConnection();
-        System.out.println("Einzelnes Betriebsmittel geladen ...\n");
         return betriebsMittelGr;
     }
     
@@ -337,8 +322,6 @@ public class SQLConnect {
              Vorgang[] vorgArr = new Vorgang[2];
              vorgArr[0] = vorgangV;
              vorgArr[1] = vorgangN;
-             System.out.println("Inhalt vom Array-Feld 1:"+vorgArr[0].getVorgangId());
-             System.out.println("Inahlt vom Array-Feld 2:"+vorgArr[1].getVorgangId());
              vorgUndNachf.add(vorgArr);
          }
          rsVorgUndNachf.close();
@@ -361,7 +344,6 @@ public class SQLConnect {
          while(rsVorg.next()) {
              Vorgang vorgangV = new Vorgang((Integer) rsVorg.getObject("Vorgaenger_idVorgang"));
              vorg.add(vorgangV);
-             System.out.println("Vorgang Id:" +vorgangV.getVorgangId());
          }
          rsVorg.close();
          this.closeConnection();
@@ -383,7 +365,6 @@ public class SQLConnect {
          while(rsVorg.next()) {
              Vorgang vorgangV = new Vorgang((Integer) rsVorg.getObject("Nachfolger_idVorgang"));
              nachf.add(vorgangV);
-             System.out.println("Vorgang Id:" +vorgangV.getVorgangId());
          }
          rsVorg.close();
          this.closeConnection();
@@ -406,7 +387,6 @@ public class SQLConnect {
          while(rsBetr.next()) {
              Vorgang vorgang = new Vorgang((Integer) rsBetr.getObject("Vorgang_idVorgang"));
              bezugVorg.add(vorgang);
-             System.out.println("Vorgang Id:" +vorgang.getVorgangId());
          }
          rsBetr.close();
          this.closeConnection();
@@ -429,7 +409,6 @@ public class SQLConnect {
          while(rsVorg.next()) {
              Betriebsmittelgruppe betrMG = new Betriebsmittelgruppe((Integer) rsVorg.getObject("Betriebsmittelgruppe_idBetriebsmittelgruppe"));
              vorgBetr.add(betrMG);
-             System.out.println("Betriebsmittelgruppe Id:" + betrMG.getBetrMittelGrId());
          }
          rsVorg.close();
          this.closeConnection();

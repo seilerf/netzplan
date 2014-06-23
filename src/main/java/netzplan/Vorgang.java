@@ -46,10 +46,14 @@ public class Vorgang extends Observable {
         this.name = name;
         this.dauer = dauer;
         this.netzRefId = netzRefId;
+        this.nachf = new LinkedList<Vorgang>();
+        this.vorgaenger = new LinkedList<Vorgang>();
     }
     
     public Vorgang(int id) {
         this.vorgangId = id;
+        this.nachf = new LinkedList<Vorgang>();
+        this.vorgaenger = new LinkedList<Vorgang>();
     }
     
     public Vorgang() {
@@ -57,7 +61,8 @@ public class Vorgang extends Observable {
         this.dauer = 0.0;
         this.faz = 0.0;
         this.sez = 0.0;
-        this.nachf = null;
+        this.nachf = new LinkedList<Vorgang>();
+        this.vorgaenger = new LinkedList<Vorgang>();
     }
     
     public Vorgang(String name){
@@ -131,12 +136,7 @@ public class Vorgang extends Observable {
     public void setSez(double sez) {
         this.sez = sez;
     }
-    
-    public double getFEZ() {
-        // Evtl. Fehlberechnung abfangen, wenn noch kein fAnfang initialisiert
-        return (this.faz + this.dauer);
-    }
-    
+   
     public LinkedList<Vorgang> getVorgaenger() {
         return vorgaenger;
     }
