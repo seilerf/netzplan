@@ -7,6 +7,7 @@
 package edu.fh.application;
 
 import datenbank.SQLConnect;
+import java.awt.GridBagConstraints;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ public class Netzplanung {
     private boolean checkField;
     private final SQLConnect con = new SQLConnect();
     private int refInitSize;
+    private int refBackInitSize;
     //Vorgangsdauer
     private double[] dauer;
     //frühester Vorgangsbeginn
@@ -36,10 +38,15 @@ public class Netzplanung {
     private double startZeit;
     private double endZeit;
     private int anzahl;
+    private double minSt;
+    private double refSaz;
     
     private LinkedList<Vorgang> vorgangList;
     private LinkedList<Vorgang> initVorgang;
-    LinkedList<Vorgang> sortierteVorgaenge = new LinkedList<Vorgang>();
+    private LinkedList<Vorgang> backInit;
+    private LinkedList<Vorgang> sortierteVorgaengeRef = new LinkedList<Vorgang>();
+    private LinkedList<Vorgang> sortierteVorgaenge = new LinkedList<Vorgang>();
+    private LinkedList<Vorgang> vorgaengerCash = new LinkedList<Vorgang>();
     
     //Default Konstruktor
 
@@ -49,10 +56,12 @@ public class Netzplanung {
         if(con.checkNetzplanId(idNetzplan)==true) {
             this.netz = con.ladeNetzplan(idNetzplan);
             vorgangList = this.con.ladeVorgaenge(idNetzplan);
+            //Update Puffer Funktion muss noch implementiert werden!!!
             this.netz.setGesamtPuffer(vorgangList.size());
             this.netz.setFreierPuffer(MAX-vorgangList.size());
             this.vorgangList = new LinkedList<Vorgang>(con.ladeVorgaenge(idNetzplan));
             this.initVorgang = new LinkedList<Vorgang>();
+            this.backInit = new LinkedList<Vorgang>();
             this.anzahl = vorgangList.size();
             
             //this.dauer = new double[MAX];
@@ -87,76 +96,127 @@ public class Netzplanung {
      */
     public void netzPlanBerechnung() throws SQLException {
         // Abhängigkeiten setzen
-        
-        //LinkedList<Vorgang> nachfolger = new LinkedList<Vorgang>();
-       // LinkedList<Vorgang> vorgaenger = new LinkedList<Vorgang>();
         this.defineOrdersFirst(vorgangList);
-        this.refInitSize = initVorgang.size();
-        System.out.println("Größe der refInitSize:" +initVorgang.size());
+        this.refInitSize = initVorgang.size(); 
         
         for(int i=0; i< this.initVorgang.size(); ++i) {
-            if(this.listIdCheck(initVorgang.get(i).getVorgangId())==false) {
-                
-                System.out.println("Kommen wir bei den Init-Vorgaengen rein?!");
-                
+            if(this.listIdCheck(initVorgang.get(i).getVorgangId())==false) {    
                 sortierteVorgaenge.add(initVorgang.get(i));
-                System.out.println("Id des InitVorgang:"+initVorgang.get(i).getVorgangId());
-                //Hier weitermachen morgen die Vorgaenge nach den Initvorgaengen bekommen nicht die richtige Dauer mitübergeben!!
-                System.out.println("Dauer des InitVorgang:"+initVorgang.get(i).getDauer());
+                System.out.println("Oberste Init For-Schleife! \t");
+                System.out.println("Id des Vorgangs: "+ sortierteVorgaenge.get(i).getVorgangId());
+                System.out.println("Name des Vorgangs: "+ sortierteVorgaenge.get(i).getName());
+                System.out.println("Dauer des Vorgangs: "+ sortierteVorgaenge.get(i).getDauer()+"\n");
             }
         }
         
-        
         for(int j=0; j<sortierteVorgaenge.size(); ++j) {
+            System.out.println("Obere For-Schleife!\t");
             sortierteVorgaenge.get(j).setNachf(con.ladeAlleNachf(sortierteVorgaenge.get(j).getVorgangId()));
             for(int k=0; k< sortierteVorgaenge.get(j).getNachf().size(); ++k) {
                 if(this.listIdCheck(sortierteVorgaenge.get(j).getNachf().get(k).getVorgangId())==false) {
                     sortierteVorgaenge.add(sortierteVorgaenge.get(j).getNachf().get(k));
-                    System.out.println("Der Vorgang mit der Id:"+sortierteVorgaenge.get(j).getNachf().get(k).getVorgangId()+" wurde hinzugefügt");
-                     System.out.println("Der Vorgang hat die Dauer:"+sortierteVorgaenge.get(j).getNachf().get(k).getDauer()+" !!!");
+                     System.out.println("Untere For-Schleife! \t");
+                     System.out.println("Id des Vorgangs: "+ sortierteVorgaenge.get(j).getNachf().get(k).getVorgangId());
+                     System.out.println("Name des Vorgangs: "+ sortierteVorgaenge.get(j).getNachf().get(k).getName());
+                     System.out.println("Dauer des Vorgangs: "+ sortierteVorgaenge.get(j).getNachf().get(k).getDauer()+"\n");
                 }
             }
         }
         
         for(int l=0; l<sortierteVorgaenge.size(); ++l) {
             if(l<this.refInitSize) {
-                sortierteVorgaenge.get(l).setFez(sortierteVorgaenge.get(l).getDauer());
+                sortierteVorgaenge.get(l).setFez(sortierteVorgaenge.get(l).getDauer()); 
             } 
-            if(l>refInitSize) {
-                System.out.println("Gehen wir hier rein?!\n");
-                LinkedList<Vorgang> vorgaengerCash = new LinkedList<Vorgang>();
+            if(l>=refInitSize) {
+                System.out.println("Gehen wir hier rein?!-> Zweite IF-Abfrage");
+                System.out.println("Id des aktuelle zu Verarbeitenden Vorgangs:" +sortierteVorgaenge.get(l).getVorgangId());
+                //Fehler hier bei ladeAleVorg, außerdem dem wird beim setLadeZeit nicht in die DB geschrieben
+                //Dabei muss entschieden werden ob die Vorgang.java auch noch eine DB-Connection bekommt oder
+                //in der SQLConnection noch Methoden zu adden von Zeiten in die Datenbank implementiert werden (2ter Vorschlag besser! morgen!) 
+                /**
+                 * Funzt Immer noch nicht richtig!!
+                 */
                 vorgaengerCash = con.ladeAlleVorg(sortierteVorgaenge.get(l).getVorgangId());  
-                double minSt = vorgaengerCash.get(0).getFez();
+                for(int z=0; z<vorgaengerCash.size(); ++z) {
+                    for(int y=0; y<sortierteVorgaenge.size(); ++y) {
+                        if(vorgaengerCash.get(z).getVorgangId() == sortierteVorgaenge.get(y).getVorgangId()) {
+                            vorgaengerCash.get(z).setFez(sortierteVorgaenge.get(y).getFez());
+                        }
+                    }
+                }
+                this.minSt = vorgaengerCash.get(0).getFez();
                 
                 for(int p=0; p<vorgaengerCash.size(); ++p) {
                     double minRef = vorgaengerCash.get(p).getFez();
+                    //System.out.println("ReferenzWert zum SchleifenStart: "+minSt);
+                    //System.out.println("ReferenzWert beim Durchlaufen der VorgaengerCash-Liste: "+minRef+"");
                     
                     if(minRef < minSt) {
                         minSt = minRef;
+                        System.out.println("Sind wir nach den Startwerten auch in der 3te.IF-Anweisung?!\n");
                     }
-                    
-                   /** if(vorgaengerCash.get(p).getFez() < vorgaengerCash.get(p+1).getFez()) {
- 
-                       sortierteVorgaenge.get(l).setFaz(vorgaengerCash.get(p).getFez());
-                       System.out.println("Die Übergebene früheste Endzeit nach den Init-Vorgaengen lautet:" +sortierteVorgaenge.get(l).getFaz());
-                    } else {
-                        sortierteVorgaenge.get(l).setFez(vorgaengerCash.get(p+1).getFez());
-                        System.out.println("Die Übergebene früheste Endzeit nach den Init-Vorgaengen lautet:" +sortierteVorgaenge.get(p).getFaz());
-                    }*/
-                    
-                    System.out.println("Die früheste Anfangszeit wurde gesetzt!\n");
-                    System.out.println("Der Wert der Anfangszeit beträgt:" + sortierteVorgaenge.get(l).getFaz());
+                    System.out.println("Der Wert der Dauer des aktuellen Vorgangs lautet: "+ sortierteVorgaenge.get(l).getDauer());
                     sortierteVorgaenge.get(l).setFaz(minSt);
-                    System.out.println("Die früheste Endzeit wurde gesetzt\n");
-                    System.out.println("Der Wert für die früheste Endzeit beträgt:" + sortierteVorgaenge.get(l).getFez());
-                    sortierteVorgaenge.get(l).setFez(sortierteVorgaenge.get(l).getFaz() + sortierteVorgaenge.get(l).getDauer());
+                    System.out.println("Der Wert der Anfangszeit beträgt:" + sortierteVorgaenge.get(l).getFaz());
                     
+                    sortierteVorgaenge.get(l).setFez(sortierteVorgaenge.get(l).getFaz() + sortierteVorgaenge.get(l).getDauer());
+                    System.out.println("Der Wert für die früheste Endzeit beträgt:" + sortierteVorgaenge.get(l).getFez()+"\n\n");
+                   vorgaengerCash.clear();
                 }
-                
-                //sortierteVorgaenge.get(l).setFaz(sortierteVorgaenge.get(l-1).getFez());
             }
         }
-  
+        System.out.println("===============================================================");
+        System.out.println("START DER BERECHNUNG DER SPAETESTEN ANFANGSZEITEN UND ENDZEITEN");
+        System.out.println("===============================================================");
+        this.sortierteVorgaengeRef = sortierteVorgaenge;
+        this.defineOrdersLast(sortierteVorgaenge);
+        this.refBackInitSize = backInit.size();
+        for(int n=0; n<backInit.size(); ++n) {
+            for(int o=0; o<sortierteVorgaenge.size(); ++o) {
+                if(backInit.get(n).getVorgangId()==sortierteVorgaenge.get(o).getVorgangId()) {
+                    sortierteVorgaenge.get(o).setSez(netz.getEnde());
+                    sortierteVorgaenge.get(o).setSaz(netz.getEnde() - sortierteVorgaenge.get(o).getDauer());
+                    for(int x=0; x<sortierteVorgaengeRef.size(); ++x) {
+                        if(sortierteVorgaengeRef.get(x).getVorgangId()==backInit.get(n).getVorgangId()) {
+                           //sortierteVorgaengeRef.remove(x);
+                        }
+                    }
+                }
+            }
+        }    
+                
+        for(int u=sortierteVorgaengeRef.size()-1; u>-1; --u) {
+            vorgaengerCash = con.ladeAlleVorg(sortierteVorgaengeRef.get(u).getVorgangId());
+                    
+            if(vorgaengerCash.size() != 0) {
+                for(int y=0; y < vorgaengerCash.size(); ++y) {
+                    for(int c=0; c<sortierteVorgaenge.size(); ++c) {
+                        if(vorgaengerCash.get(y).getVorgangId()== sortierteVorgaenge.get(c).getVorgangId()) {
+                            for(int v=0; v<sortierteVorgaenge.size(); ++v) {
+                                if(sortierteVorgaengeRef.get(u).getVorgangId()== sortierteVorgaenge.get(v).getVorgangId()) {
+                                   if(this.refSaz > sortierteVorgaenge.get(c).getSez() - sortierteVorgaenge.get(c).getDauer() || sortierteVorgaenge.get(c).getSaz()==0) {
+                                    sortierteVorgaenge.get(c).setSez(sortierteVorgaenge.get(v).getSaz());
+                                    sortierteVorgaenge.get(c).setSaz(sortierteVorgaenge.get(c).getSez() - sortierteVorgaenge.get(c).getDauer());
+                                    this.refSaz = sortierteVorgaenge.get(c).getSez();
+                                   }
+                               }
+                            }  
+                        }
+                    }
+                }
+            }
+            vorgaengerCash.clear();
+        }
+        
+        for(int d=0; d<sortierteVorgaenge.size(); ++d) {
+            System.out.println("VorgangId: "+sortierteVorgaenge.get(d).getVorgangId());
+            System.out.println("VorgangsName: "+sortierteVorgaenge.get(d).getName());
+            System.out.println("VorgangsDauer: "+sortierteVorgaenge.get(d).getDauer());
+            System.out.println("VorgangsFaz: "+sortierteVorgaenge.get(d).getFaz());
+            System.out.println("VogangsFez:" +sortierteVorgaenge.get(d).getFez());
+            System.out.println("VorgangsSaz: "+sortierteVorgaenge.get(d).getSaz());
+            System.out.println("VorgangsSez: "+sortierteVorgaenge.get(d).getSez()+"\n\n\n");
+        }
         /**
         for(int i = 0;i < anzahl; ++i) {
             int fieldOne = this.vorgangList.get(i).getVorgangId();
@@ -240,6 +300,24 @@ public class Netzplanung {
           }
         }
         return initVorgang;
+    }
+    
+    /**
+     * 
+     * @param vorgang
+     * @return
+     * @throws SQLException 
+     */
+    public LinkedList<Vorgang> defineOrdersLast(LinkedList<Vorgang> vorgang) throws SQLException {
+        if(vorgang.size() != 0) {
+            for(int i=0; i<vorgang.size(); ++i) {
+                if(con.ladeAlleNachf(vorgang.get(i).getVorgangId()).size()==0) {
+                    vorgang.get(i).setSaz(netz.getEnde());
+                    this.backInit.add(vorgang.get(i));
+                }
+            }
+        } 
+        return backInit;
     }
 
 

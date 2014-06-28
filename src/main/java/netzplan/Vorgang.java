@@ -137,7 +137,7 @@ public class Vorgang extends Observable {
         this.sez = sez;
     }
    
-    public LinkedList<Vorgang> getVorgaenger() {
+    public LinkedList<Vorgang> getVorgaenger(LinkedList<Vorgang> vorgaenger) {
         return vorgaenger;
     }
 

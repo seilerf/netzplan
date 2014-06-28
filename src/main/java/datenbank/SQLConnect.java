@@ -309,7 +309,7 @@ public class SQLConnect {
      * @param netzPlanId
      * @return
      * @throws SQLException 
-     */
+     
     public LinkedList<Vorgang[]> ladeAlleVorUndNachf(int netzPlanId) throws SQLException {
         LinkedList<Vorgang[]> vorgUndNachf = new LinkedList<Vorgang[]>();
         this.startConnection();
@@ -327,7 +327,7 @@ public class SQLConnect {
          rsVorgUndNachf.close();
          this.closeConnection();
        return vorgUndNachf;
-    }
+    } */
    
     /**
      * Funktion um alle Vorgänger zu einem bestimmten Vorgang zu erhalten
@@ -338,11 +338,13 @@ public class SQLConnect {
     public LinkedList<Vorgang> ladeAlleVorg(int vorgId) throws SQLException {
         LinkedList<Vorgang> vorg = new LinkedList<Vorgang>();
         this.startConnection();
-        String sqlQuery = "SELECT * FROM Vorgang_has_Vorgang WHERE Nachfolger_idVorgang = "+ vorgId +"";
+        //String sqlQuery = "SELECT * FROM Vorgang_has_Vorgang WHERE Nachfolger_idVorgang = "+ vorgId +"";
+        String sqlQuery = "select vg.`idVorgang`, vg.`nameVorgang`, vg.dauer\n" +
+                          "From vorgang vg, vorgang_has_vorgang nf Where vg.`idVorgang` = nf.`Vorgaenger_idVorgang` and nf.`Nachfolger_idVorgang`= " +vorgId+ ";";
         ResultSet rsVorg = this.getConnection().createStatement().executeQuery(sqlQuery);
         
          while(rsVorg.next()) {
-             Vorgang vorgangV = new Vorgang((Integer) rsVorg.getObject("Vorgaenger_idVorgang"));
+             Vorgang vorgangV = new Vorgang((Integer) rsVorg.getObject("idVorgang"), (String) rsVorg.getObject("nameVorgang"), (Double) rsVorg.getObject("dauer"));
              vorg.add(vorgangV);
          }
          rsVorg.close();
@@ -359,11 +361,16 @@ public class SQLConnect {
     public LinkedList<Vorgang> ladeAlleNachf(int vorgId) throws SQLException {
         LinkedList<Vorgang> nachf = new LinkedList<Vorgang>();
         this.startConnection();
-        String sqlQuery = "SELECT * FROM Vorgang_has_Vorgang WHERE Vorgaenger_idVorgang = "+ vorgId +"";
+        //String sqlQuery = "SELECT * FROM Vorgang_has_Vorgang WHERE Vorgaenger_idVorgang = "+ vorgId +"";
+        //String sqlQuery = "select nf.`Nachfolger_idVorgang`, vg.nameVorgang, vg.dauer, vg.Netzplan_idNetzplan, nf.Vorgaenger_idVorgang\n" +
+          //                 "From vorgang vg, vorgang_has_vorgang nf Where vg.`idVorgang` = "+ vorgId +" and nf.`Vorgaenger_idVorgang`= "+ vorgId +";";
+        String sqlQuery = "select vg.`idVorgang`, vg.`nameVorgang`, vg.dauer\n" +
+                          "From vorgang vg, vorgang_has_vorgang nf Where vg.`idVorgang` = nf.`Nachfolger_idVorgang` and nf.`Vorgaenger_idVorgang`= " +vorgId+ ";";
         ResultSet rsVorg = this.getConnection().createStatement().executeQuery(sqlQuery);
+      
         
          while(rsVorg.next()) {
-             Vorgang vorgangV = new Vorgang((Integer) rsVorg.getObject("Nachfolger_idVorgang"));
+             Vorgang vorgangV = new Vorgang((Integer) rsVorg.getObject("idVorgang"), (String) rsVorg.getObject("nameVorgang"), (Double) rsVorg.getObject("dauer"));
              nachf.add(vorgangV);
          }
          rsVorg.close();
@@ -413,5 +420,10 @@ public class SQLConnect {
          rsVorg.close();
          this.closeConnection();
        return vorgBetr;
+    }
+    
+    public void updateFAZ(int vorgId, double faz) throws SQLException {
+        this.startConnection();
+        String updateQuery = "UPDATE Vorgang SET ";
     }
 }
