@@ -175,7 +175,6 @@ public class SQLConnect {
         ResultSet rsVorgang = this.getConnection().createStatement().executeQuery(sqlQuery);
         rsVorgang.next();
         Vorgang vorgang = new Vorgang((Integer) rsVorgang.getObject("idVorgang"), (String) rsVorgang.getObject("nameVorgang"), (Double) rsVorgang.getObject("dauer"));
-        System.out.println("Vorgangsname:"+vorgang.getName());
       
         this.closeConnection();
         return vorgang;
@@ -304,6 +303,8 @@ public class SQLConnect {
         this.closeConnection();
     }
     
+    
+    
     /**
      * Funktion zum Laden aller Vorgang_has_Vorgang Einträge
      * @param netzPlanId
@@ -422,8 +423,27 @@ public class SQLConnect {
        return vorgBetr;
     }
     
-    public void updateFAZ(int vorgId, double faz) throws SQLException {
+    /**
+     * 
+     * @param vorgangId
+     * @param netzPlanId
+     * @return
+     * @throws SQLException 
+     */
+    public LinkedList<Betriebsmittelgruppe> getBetriebsmittelkapazitaetForId(int vorgangId, int netzPlanId) throws SQLException {
         this.startConnection();
-        String updateQuery = "UPDATE Vorgang SET ";
+        LinkedList<Betriebsmittelgruppe> betriebsMittel = new LinkedList<Betriebsmittelgruppe>();
+        String sqlQuery = "select bmg.idBetriebsmittelgruppe, bmg.nameBetriebsmittelgruppe, bmg.betriebsmittelKapazitaet, vbmg.Vorgang_idVorgang\n" +
+                           "From Betriebsmittelgruppe bmg, Vorgang_has_Betriebsmittelgruppe vbmg Where vbmg.Vorgang_idVorgang = "+ vorgangId+" and vbmg.Betriebsmittelgruppe_idBetriebsmittelgruppe = bmg.idBetriebsmittelgruppe and vbmg.`Vorgang_Netzplan_idNetzplan`= "+netzPlanId+""; 
+        ResultSet rsBetrMt = this.getConnection().createStatement().executeQuery(sqlQuery);
+        Betriebsmittelgruppe betriebsMittelGr = new Betriebsmittelgruppe();
+        
+        while(rsBetrMt.next()) {
+            betriebsMittelGr = new Betriebsmittelgruppe((Integer) rsBetrMt.getObject("idBetriebsmittelgruppe"),(String) rsBetrMt.getObject("nameBetriebsmittelgruppe"), (Double) rsBetrMt.getObject("betriebsmittelKapazitaet"), (Integer) rsBetrMt.getObject("Vorgang_idVorgang"));
+            betriebsMittel.add(betriebsMittelGr);
+        }
+        rsBetrMt.close();
+        this.closeConnection();
+        return betriebsMittel;
     }
 }

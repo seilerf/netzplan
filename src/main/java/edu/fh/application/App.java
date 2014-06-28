@@ -21,7 +21,6 @@ public class App
         
        try {
            netz = sql.ladeNetzplan(1);
-           System.out.println("Die geladene NetzplanID:"+netz.getId());
            netzPl = new Netzplanung(netz.getId());
            netzPl.netzPlanBerechnung();
            
@@ -105,6 +104,11 @@ public class App
            
            /**Test 12: Funktion ==> ladeAlleBetrZuVorg()
             * sql.ladeAlleBetrZuVorg(1);
+            * ->    Done
+            */
+           
+           /**Test 12: Funktion ==> getBetriebsmittelkapazitaetForId()
+            * sql.getBetriebsmittelkapazitaetForId(2);
             * ->    Done
             */
            

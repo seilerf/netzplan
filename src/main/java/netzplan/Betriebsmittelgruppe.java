@@ -17,7 +17,9 @@ public class Betriebsmittelgruppe extends Observable {
     private int betrMittelGrId; 
     private String nameBetrMittelGr;
     private double betrMittelKapa;
-    
+    private int vorgangId; 
+
+
     public Betriebsmittelgruppe() {   
     }
     
@@ -30,14 +32,29 @@ public class Betriebsmittelgruppe extends Observable {
         this.betrMittelKapa = kapa;
     }
     
-    public Betriebsmittelgruppe(int id, String name, double kapa) {
+    public Betriebsmittelgruppe(int id, String name, double kapa, int vorgangId) {
+        this.betrMittelGrId = id;
+        this.nameBetrMittelGr = name;
+        this.betrMittelKapa = kapa;
+        this.vorgangId = vorgangId;
+    }
+    
+     public Betriebsmittelgruppe(int id, String name, double kapa) {
         this.betrMittelGrId = id;
         this.nameBetrMittelGr = name;
         this.betrMittelKapa = kapa;
     }
             
     
+     
+    public int getVorgangId() {
+        return vorgangId;
+    }
 
+    public void setVorgangId(int vorgangId) {
+        this.vorgangId = vorgangId;
+    }
+    
     public int getBetrMittelGrId() {
         return betrMittelGrId;
     }
@@ -61,5 +78,8 @@ public class Betriebsmittelgruppe extends Observable {
     public void setBetrMittelKapa(double betrMittelKapa) {
         this.betrMittelKapa = betrMittelKapa;
     }
-
+    
+    public void discountBetrMittelKapa(double downRate) {
+        this.betrMittelKapa -= downRate;
+    }
 }
