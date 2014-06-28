@@ -178,7 +178,6 @@ public class Netzplanung {
                     sortierteVorgaenge.get(o).setSaz(netz.getEnde() - sortierteVorgaenge.get(o).getDauer());
                     for(int x=0; x<sortierteVorgaengeRef.size(); ++x) {
                         if(sortierteVorgaengeRef.get(x).getVorgangId()==backInit.get(n).getVorgangId()) {
-                           //sortierteVorgaengeRef.remove(x);
                         }
                     }
                 }
