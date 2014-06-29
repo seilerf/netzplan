@@ -46,6 +46,7 @@ public class Netzplanung {
     
     private LinkedList<Betriebsmittelgruppe> betriebsmittelgruppe = new LinkedList<Betriebsmittelgruppe>();
     private LinkedList<Betriebsmittelgruppe> bmgCach = new LinkedList<Betriebsmittelgruppe>();
+    private LinkedList<Betriebsmittelgruppe> bmgOutOfKapa = new LinkedList<Betriebsmittelgruppe>();
     
 
     
@@ -165,7 +166,12 @@ public class Netzplanung {
         if(this.checkBetriebsmittelStatus(sortierteVorgaenge)==false) {
             System.out.println("=================================================================================================");
             System.out.println("Es ist nicht möglich den Netzplan mit den vorhandenen Betriebsmittelkapazitäten auszufuehren!!!\n");
-            System.out.println("=================================================================================================");            
+            System.out.println("================================================================================================="); 
+            for(int n=0; n < bmgOutOfKapa.size(); ++n) {
+                System.out.println("Dies liegt an dem Betriebsmittel mit der Id: "+bmgOutOfKapa.get(n).getBetrMittelGrId());
+                System.out.println("Betriebsmittelname: "+bmgOutOfKapa.get(n).getNameBetrMittelGr());
+                System.out.println("Der Vorgang, der die Kapazitaet der Betriebsmittelgruppe ueberschritten hat: "+bmgOutOfKapa.get(n).getVorgangId());
+            } 
         } else {
             System.out.println("=================================================================================================");
             System.out.println("Die Betriebsmittelkapazitaeten reichen aus um den Netzplan auszufuehren!!!\n");
@@ -252,7 +258,8 @@ public class Netzplanung {
                     betriebsmittelgruppe.get(l).discountBetrMittelKapa(vorgaenge.get(k).getDauer());
                     if(betriebsmittelgruppe.get(l).getBetrMittelKapa()<0) {
                         this.checkBmg = false;
-                    }
+                        this.bmgOutOfKapa.add(betriebsmittelgruppe.get(l));
+                    } 
                 }
             }
         }

@@ -25,10 +25,10 @@ public class App
            netzPl.netzPlanBerechnung();
            
            
-            /**Test 1: Funktion ==> ladeAlleNetzplaene()
-             * sql.ladeAlleNetzplaene();  
-             * ->   Done
-             */
+           /** Test 1: Funktion ==> ladeAlleNetzplaene()
+            * sql.ladeAlleNetzplaene();  
+            * ->   Done
+            */
             
            
             /**Test 2: Funktion ==> ladeNetzplan(int id)
