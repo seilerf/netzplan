@@ -143,6 +143,7 @@ public class SQLConnect {
         this.closeConnection();
     }
     
+     
     /**
      * Funktion zum Laden aller Vorgaenge zu einem Netzplan
      * @param idNetzplan
