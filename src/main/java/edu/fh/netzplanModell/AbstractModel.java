@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 
-package inetzplan;
+package edu.fh.netzplanModell;
 
 /**
  *
- * @author Maxwell
+ * @author fseiler
  */
-public interface NetzplanInterface {
+public class AbstractModel {
     
 }

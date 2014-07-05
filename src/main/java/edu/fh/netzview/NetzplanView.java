@@ -4,13 +4,13 @@
  * and open the template in the editor.
  */
 
-package netzview;
+package edu.fh.netzview;
 
 import static java.lang.System.exit;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JFrame;
-import netzcontroller.NetzplanController;
+import edu.fh.netzcontroller.NetzplanController;
 
 /**
  *

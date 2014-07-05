@@ -6,12 +6,12 @@
 
 package edu.fh.datenbankTest;
 
-import datenbank.SQLConnect;
+import edu.fh.datenbank.SQLConnect;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import netzplan.Betriebsmittelgruppe;
-import netzplan.Netzplan;
-import netzplan.Vorgang;
+import edu.fh.netzplanModell.Betriebsmittelgruppe;
+import edu.fh.netzplanModell.Netzplan;
+import edu.fh.netzplanModell.Vorgang;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -6,15 +6,15 @@
 
 package edu.fh.application;
 
-import datenbank.SQLConnect;
+import edu.fh.datenbank.SQLConnect;
 import java.awt.GridBagConstraints;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import netzplan.Betriebsmittelgruppe;
-import netzplan.Netzplan;
-import netzplan.Vorgang;
+import edu.fh.netzplanModell.Betriebsmittelgruppe;
+import edu.fh.netzplanModell.Netzplan;
+import edu.fh.netzplanModell.Vorgang;
 
 /**
  *
@@ -23,58 +23,63 @@ import netzplan.Vorgang;
 public class Netzplanung {
     //Alle Netzplaene sind auf maximal 50 Vorgänge beschränkt
     final int MAX = 50;
+    //Hilfsparameter zum Gueltigkeitscheck
     private boolean checkField;
+    //Hilfsparamter fuer den Betriebsmittelgruppen-Check
     private boolean checkBmg = true;
+    //Hilfsparamter fuer die Feststellung der Ausfuehrbarkeit eines Netzplanes
     private boolean netzDurabilityCheck;
+    //Datenbank-Verbing
     private final SQLConnect con = new SQLConnect();
+    //Hilfsreferenz auf die Listengroeße
     private int refInitSize;
+    //Hilfsreferenz auf die Listengroeße
     private int refBackInitSize;
-    
+    //Referenz auf den zu bearbeitenden Netzplan
     private Netzplan netz;
-    private double startZeit;
-    private double endZeit;
-    private int anzahl;
+    //Referenzwert zum Zwischenspeichern von fruehsten Anfangszeiten
     private double minSt;
+    //Referenzwert auf die spaetenste Anfangszeit
     private double refSaz;
-    private double betriebsKapa;
-    
+    //Benoetigten LinkedListen von Vorgaengen zur Berechnung des Netzplanes
     private LinkedList<Vorgang> vorgangList;
     private LinkedList<Vorgang> initVorgang;
     private LinkedList<Vorgang> backInit;
     private LinkedList<Vorgang> sortierteVorgaengeRef = new LinkedList<Vorgang>();
     private LinkedList<Vorgang> sortierteVorgaenge = new LinkedList<Vorgang>();
     private LinkedList<Vorgang> vorgaengerCash = new LinkedList<Vorgang>();
-    
+    //Benoetigten LinkedListen von Betriebsmittelgruppen zur Berechnung der Durchfuehrbarkeit
     private LinkedList<Betriebsmittelgruppe> betriebsmittelgruppe = new LinkedList<Betriebsmittelgruppe>();
     private LinkedList<Betriebsmittelgruppe> bmgCach = new LinkedList<Betriebsmittelgruppe>();
     private LinkedList<Betriebsmittelgruppe> bmgOutOfKapa = new LinkedList<Betriebsmittelgruppe>();
     
 
-    
+    //Konstruktor mit Uebergabe des Netzplanes
     public Netzplanung(int idNetzplan) throws SQLException {
-        
+        //Checkt ob die uebergebene Netzplan-Id ueberhaupt existiert
         if(con.checkNetzplanId(idNetzplan)==true) {
             this.netz = con.ladeNetzplan(idNetzplan);
             vorgangList = this.con.ladeVorgaenge(idNetzplan);
-            //Update Puffer Funktion muss noch implementiert werden!!!
             this.netz.setGesamtPuffer(vorgangList.size());
             this.netz.setFreierPuffer(MAX-vorgangList.size());
             this.vorgangList = new LinkedList<Vorgang>(con.ladeVorgaenge(idNetzplan));
             this.initVorgang = new LinkedList<Vorgang>();
             this.backInit = new LinkedList<Vorgang>();
-            this.anzahl = vorgangList.size();
             this.netzDurabilityCheck = false;
         } else {
             System.out.println("Die Netzplanung kann nicht durchgeführt werden!\n");
-        } 
+        } if(this.netz.getFreierPuffer()< 0) {
+            System.out.println("Der Netzplan besitzt zu viele Vorgaenge! Das Maximum beträgt 50 Vorgaenge pro Netzplan!\n");
+        }
     }
-
     
     /**
-     * Anpassung nötig bezüglich VorgangsListe und sortierteVorgaenge!!!!!
+     * Berechnung der Netzplanes (Faz, Fez, Saz, Sez) und der Durchfuehrbarkeit.
+     * @return netzDurabilityCheck -> true ==> durchfuehrbar; false ==> nicht durchfuehrbar
      * @throws SQLException 
      */
     public boolean netzPlanBerechnung() throws SQLException {
+        if(this.netz.getFreierPuffer() > -1) {
         // Abhängigkeiten setzen
         this.defineOrdersFirst(vorgangList);
         this.refInitSize = initVorgang.size(); 
@@ -159,7 +164,8 @@ public class Netzplanung {
                             }  
                         }
                     }
-                }
+                  }
+               }
             }
             vorgaengerCash.clear();
         }
@@ -193,9 +199,9 @@ public class Netzplanung {
     } 
     
     /**
-     * 
-     * @param vorgangId
-     * @return 
+     * Methode um zu Ueberpruefen ob ein Vorgang schon in der sortierten Liste vorhanden ist.
+     * @param vorgangId -> Referenz auf die Id des Vorgangs
+     * @return checkField
      */
     public boolean listIdCheck(int vorgangId) {
         this.checkField = false;
@@ -208,9 +214,9 @@ public class Netzplanung {
     }
     
     /**
-     * 
-     * @param vorgang
-     * @return 
+     * Diese Methode definiert die Initliste d.h. die Liste mit den Anfangsvorgaengen des Netzplanes.
+     * @param vorgang -> LinkedListe auf die Vorgaenge
+     * @return initVorgang
      */
     public LinkedList<Vorgang> defineOrdersFirst(LinkedList<Vorgang> vorgang) throws SQLException {
         if(vorgang.size()!=0) {
@@ -225,9 +231,9 @@ public class Netzplanung {
     }
     
     /**
-     * 
-     * @param vorgang
-     * @return
+     * Methode um die Endvorgaenge des Netzplanes zu finden fuer die Berechnung der spaetesten Start/End-Zeiten.
+     * @param vorgang -> LinkedListe mit den Vorgaengen
+     * @return backInit
      * @throws SQLException 
      */
     public LinkedList<Vorgang> defineOrdersLast(LinkedList<Vorgang> vorgang) throws SQLException {
@@ -243,9 +249,9 @@ public class Netzplanung {
     }
 
     /**
-     * 
-     * @param vorgaenge
-     * @return
+     * Methode um zu Ueberpruefen ob die Betriebsmittel fuer die Durchfuehrung des Netzplanes ausreichen.
+     * @param vorgaenge -> LinkedListe mit den Vorgaengen
+     * @return  checkBmg -> true ==> ausreichend false ==> ungenuegend
      * @throws SQLException 
      */
     public boolean checkBetriebsmittelStatus(LinkedList<Vorgang> vorgaenge) throws SQLException {

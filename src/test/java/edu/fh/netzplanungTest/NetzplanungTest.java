@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 
-package edu.fh.netzplanung;
+package edu.fh.netzplanungTest;
 
-import datenbank.SQLConnect;
+import edu.fh.datenbank.SQLConnect;
 import edu.fh.application.Netzplanung;
 import java.sql.SQLException;
-import netzplan.Netzplan;
+import edu.fh.netzplanModell.Netzplan;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

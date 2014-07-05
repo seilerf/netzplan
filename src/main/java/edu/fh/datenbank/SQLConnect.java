@@ -4,16 +4,16 @@
  * and open the template in the editor.
  */
 
-package datenbank;
+package edu.fh.datenbank;
 
 import java.awt.GridBagConstraints;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import netzplan.Betriebsmittelgruppe;
-import netzplan.Netzplan;
-import netzplan.Vorgang;
+import edu.fh.netzplanModell.Betriebsmittelgruppe;
+import edu.fh.netzplanModell.Netzplan;
+import edu.fh.netzplanModell.Vorgang;
 
 /**
  *
@@ -37,7 +37,7 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion zum Starten der Verbindung zur Datenbank
+     * Funktion zum Starten der Verbindung zur Datenbank.
      */
     public void startConnection() {
         try {
@@ -51,7 +51,7 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion zum Schließen der Verbindung zur Datenbank
+     * Funktion zum Schließen der Verbindung zur Datenbank.
      */
     public void closeConnection() {
         try {
@@ -77,8 +77,8 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion um alle Netzplaene zu laden
-     * @return
+     * Funktion um alle Netzplaene zu laden.
+     * @return  netzplaene
      * @throws SQLException 
      */
     public LinkedList<Netzplan> ladeAlleNetzplaene() throws SQLException {
@@ -99,9 +99,9 @@ public class SQLConnect {
     }
     
     /**
-     * 
-     * @param id
-     * @return
+     * Funktion um mit Hilfe der Id-Angabe einen Netzplan zu laden.
+     * @param id -> Angabe der Netzplan id
+     * @return netplan 
      * @throws SQLException 
      */
     public Netzplan ladeNetzplan(int id) throws SQLException {
@@ -121,11 +121,11 @@ public class SQLConnect {
 
     
    /**
-    * Funktion zum Einfügen eines neuen Netzplanes in die Datenbank.
-    * @param netzplanId
-    * @param netzplanName
-    * @param startZeit
-    * @param endZeit
+    * Fuktion um ein en neuen Netzplan in der Datenbank anzulegen.
+    * @param netzplanId -> Id des Netzplans
+    * @param netzplanName -> Name des Netzplans
+    * @param startZeit -> Startzeit des Netzplans
+    * @param endZeit -> Endzeit des Netzplans
     * @throws SQLException 
     */
     public void insertNetzplan(Integer netzplanId, String netzplanName, Double startZeit, Double endZeit) throws SQLException {
@@ -145,9 +145,9 @@ public class SQLConnect {
     
      
     /**
-     * Funktion zum Laden aller Vorgaenge zu einem Netzplan
+     * Funktion zum Laden aller Vorgaenge aus einem Netzplan.
      * @param idNetzplan
-     * @return
+     * @return vorgaenge -> LinkedList mit Vorgangen des Netzplanes
      * @throws SQLException 
      */
     public LinkedList<Vorgang> ladeVorgaenge(int idNetzplan) throws SQLException {
@@ -165,9 +165,9 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion laden eines bestimmten Vorgangs auf der Datenbank
-     * @param vorgangId
-     * @return
+     * Funktion laden eines bestimmten Vorgangs auf der Datenbank.
+     * @param vorgangId -> Id des Vorgangs
+     * @return vorgang
      * @throws SQLException 
      */
     public Vorgang ladeVorgang(int vorgangId) throws SQLException {
@@ -182,10 +182,10 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion zum Hinzufügen eines Vorgangs in die Datenbank
-     * @param name
-     * @param dauer
-     * @param netzRefId
+     * Funktion zum Hinzufügen eines Vorgangs in die Datenbank.
+     * @param name -> Name des Vorgangs
+     * @param dauer -> Dauer es Vorgangs
+     * @param netzRefId -> Referenzid auf den Netzplan
      * @throws SQLException 
      */
     public void insertVorgang(String name, double dauer, int netzRefId) throws SQLException {
@@ -211,9 +211,9 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion zum Überprüfen der Existenz der NetzplanId
-     * @param netzplanId
-     * @return 
+     * Funktion zum Überprüfen der Existenz der NetzplanId.
+     * @param netzplanId -> Id des Netzplans
+     * @return netzPlanCheck (true oder false)
      * @throws java.sql.SQLException 
      */
     public boolean checkNetzplanId(int netzplanId) throws SQLException {
@@ -244,8 +244,8 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion zum Laden aller Betriebsmittelgruppen
-     * @return
+     * Funktion zum Laden aller Betriebsmittelgruppen.
+     * @return betriebsMittel
      * @throws SQLException 
      */
     public LinkedList<Betriebsmittelgruppe> ladeAlleBetriebsMittelGruppen() throws SQLException {
@@ -264,9 +264,9 @@ public class SQLConnect {
     }
     
     /*
-     * Funktion um eine bestimmte Betriebsmittelgruppe per Id zu finden und aus der Datenbank zu laden
+     * Funktion um eine bestimmte Betriebsmittelgruppe per Id zu finden und aus der Datenbank zu laden.
      * @param betrMittelGrId
-     * @return
+     * @return betriebsMittelGr
      * @throws SQLException 
      */
     public Betriebsmittelgruppe ladeBetriebsmittelgruppe(int betrMittelGrId) throws SQLException {
@@ -284,9 +284,9 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion zum Einfügen einer neuen Betriebsmittelgruppe
-     * @param name
-     * @param kapa
+     * Funktion zum Einfügen einer neuen Betriebsmittelgruppe.
+     * @param name -> Name des Betriebsmittels
+     * @param kapa -> Kapazitaet des Betriebsmittelgruppe
      * @throws SQLException 
      */
     public void insertBetriebsmittelgruppe(String name, double kapa) throws SQLException {
@@ -303,38 +303,11 @@ public class SQLConnect {
         rsBetrMt.close();
         this.closeConnection();
     }
-    
-    
-    
-    /**
-     * Funktion zum Laden aller Vorgang_has_Vorgang Einträge
-     * @param netzPlanId
-     * @return
-     * @throws SQLException 
-     
-    public LinkedList<Vorgang[]> ladeAlleVorUndNachf(int netzPlanId) throws SQLException {
-        LinkedList<Vorgang[]> vorgUndNachf = new LinkedList<Vorgang[]>();
-        this.startConnection();
-        String sqlQuery = "SELECT * FROM Vorgang_has_Vorgang WHERE Vorgaenger_Netzplan_idNetzplan ="+ netzPlanId +"";
-        ResultSet rsVorgUndNachf = this.getConnection().createStatement().executeQuery(sqlQuery);
-        
-         while(rsVorgUndNachf.next()) {
-             Vorgang vorgangV = new Vorgang((Integer) rsVorgUndNachf.getObject("Vorgaenger_idVorgang"));
-             Vorgang vorgangN = new Vorgang((Integer) rsVorgUndNachf.getObject("NachFolger_idVorgang"));
-             Vorgang[] vorgArr = new Vorgang[2];
-             vorgArr[0] = vorgangV;
-             vorgArr[1] = vorgangN;
-             vorgUndNachf.add(vorgArr);
-         }
-         rsVorgUndNachf.close();
-         this.closeConnection();
-       return vorgUndNachf;
-    } */
    
     /**
-     * Funktion um alle Vorgänger zu einem bestimmten Vorgang zu erhalten
-     * @param vorgId
-     * @return
+     * Funktion um alle Vorgänger zu einem bestimmten Vorgang zu erhalten.
+     * @param vorgId -> Id des Vorgangs
+     * @return vorg
      * @throws SQLException 
      */
     public LinkedList<Vorgang> ladeAlleVorg(int vorgId) throws SQLException {
@@ -355,9 +328,9 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion zum Laden aller Nachfolger 
-     * @param vorgId
-     * @return
+     * Funktion zum Laden aller Nachfolger.
+     * @param vorgId -> Id des Vorgangs
+     * @return nachf
      * @throws SQLException 
      */
     public LinkedList<Vorgang> ladeAlleNachf(int vorgId) throws SQLException {
@@ -381,10 +354,10 @@ public class SQLConnect {
     }
     
     /**
-     * 
-     * @param betrId
-     * @param netzPlanId
-     * @return
+     * Funktion um alle Vorgaenge zu einer Betriebsmittelgruppe aus einem Netzplan zu laden.
+     * @param betrId -> Id zu der Betriebsmittelgruppe
+     * @param netzPlanId -> Id zum Netzplan
+     * @return bezugVorg
      * @throws SQLException 
      */
     public LinkedList<Vorgang> ladeAlleVorgZuBetr(int betrId, int netzPlanId) throws SQLException {
@@ -403,10 +376,10 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion um zu einem bestimmten Vorgang alle Betriebsmittel zu laden
-     * @param vorgId
-     * @param netzPlanId
-     * @return
+     * Funktion um zu einem bestimmten Vorgang alle Betriebsmittel zu laden.
+     * @param vorgId -> Id zum Vorgang
+     * @param netzPlanId -> Id zum Netzplan
+     * @return vorgBetr
      * @throws SQLException 
      */
     public LinkedList<Betriebsmittelgruppe> ladeAlleBetrZuVorg(int vorgId, int netzPlanId) throws SQLException {
@@ -425,10 +398,10 @@ public class SQLConnect {
     }
     
     /**
-     * 
-     * @param vorgangId
-     * @param netzPlanId
-     * @return
+     * Funktion um die Betriebsmittelkapazitaet zu einem Vorgang zu laden.
+     * @param vorgangId -> Id des Vorgangs
+     * @param netzPlanId -> Id des Netzplanes 
+     * @return betriebsMittel
      * @throws SQLException 
      */
     public LinkedList<Betriebsmittelgruppe> getBetriebsmittelkapazitaetForId(int vorgangId, int netzPlanId) throws SQLException {
