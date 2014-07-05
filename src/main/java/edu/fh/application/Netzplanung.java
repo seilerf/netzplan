@@ -25,6 +25,7 @@ public class Netzplanung {
     final int MAX = 50;
     private boolean checkField;
     private boolean checkBmg = true;
+    private boolean netzDurabilityCheck;
     private final SQLConnect con = new SQLConnect();
     private int refInitSize;
     private int refBackInitSize;
@@ -62,7 +63,7 @@ public class Netzplanung {
             this.initVorgang = new LinkedList<Vorgang>();
             this.backInit = new LinkedList<Vorgang>();
             this.anzahl = vorgangList.size();
-            
+            this.netzDurabilityCheck = false;
         } else {
             System.out.println("Die Netzplanung kann nicht durchgeführt werden!\n");
         } 
@@ -73,7 +74,7 @@ public class Netzplanung {
      * Anpassung nötig bezüglich VorgangsListe und sortierteVorgaenge!!!!!
      * @throws SQLException 
      */
-    public void netzPlanBerechnung() throws SQLException {
+    public boolean netzPlanBerechnung() throws SQLException {
         // Abhängigkeiten setzen
         this.defineOrdersFirst(vorgangList);
         this.refInitSize = initVorgang.size(); 
@@ -164,6 +165,7 @@ public class Netzplanung {
         }
         
         if(this.checkBetriebsmittelStatus(sortierteVorgaenge)==false) {
+            this.netzDurabilityCheck = false;
             System.out.println("=================================================================================================");
             System.out.println("Es ist nicht möglich den Netzplan mit den vorhandenen Betriebsmittelkapazitäten auszufuehren!!!\n");
             System.out.println("================================================================================================="); 
@@ -173,6 +175,7 @@ public class Netzplanung {
                 System.out.println("Der Vorgang, der die Kapazitaet der Betriebsmittelgruppe ueberschritten hat: "+bmgOutOfKapa.get(n).getVorgangId());
             } 
         } else {
+            this.netzDurabilityCheck = true;
             System.out.println("=================================================================================================");
             System.out.println("Die Betriebsmittelkapazitaeten reichen aus um den Netzplan auszufuehren!!!\n");
             System.out.println("=================================================================================================");
@@ -184,8 +187,9 @@ public class Netzplanung {
             System.out.println("VogangsFez:" +sortierteVorgaenge.get(d).getFez());
             System.out.println("VorgangsSaz: "+sortierteVorgaenge.get(d).getSaz());
             System.out.println("VorgangsSez: "+sortierteVorgaenge.get(d).getSez()+"\n\n\n");
-        }
+          }
         } 
+        return this.netzDurabilityCheck;
     } 
     
     /**
