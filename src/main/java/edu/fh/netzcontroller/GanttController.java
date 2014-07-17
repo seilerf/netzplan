@@ -6,9 +6,12 @@
 
 package edu.fh.netzcontroller;
 
+import edu.fh.application.Netzplanung;
+import edu.fh.netzplanModell.Vorgang;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import edu.fh.netzview.GanttView;
+import java.util.LinkedList;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
@@ -18,12 +21,13 @@ import org.jfree.ui.RefineryUtilities;
  * @author Anton
  */
 public class GanttController {
-    
+    Netzplanung netzPll;
 
-    public GanttController() {
+    public GanttController(Netzplanung netzPl) {
         
+        this.netzPll=netzPl;
         
-        final GanttView gv = new GanttView("Gantt Chart Demo 1", this);
+        final GanttView gv = new GanttView("Gantt Chart Demo 1", this, netzPll);
         gv.pack();
         RefineryUtilities.centerFrameOnScreen(gv);
         gv.setVisible(true);

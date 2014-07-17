@@ -47,6 +47,12 @@ public class Netzplanung {
     private LinkedList<Vorgang> backInit;
     private LinkedList<Vorgang> sortierteVorgaengeRef = new LinkedList<Vorgang>();
     private LinkedList<Vorgang> sortierteVorgaenge = new LinkedList<Vorgang>();
+
+    public LinkedList<Vorgang> getSortierteVorgaenge() {
+        return sortierteVorgaenge;
+    }
+    
+    
     private LinkedList<Vorgang> vorgaengerCash = new LinkedList<Vorgang>();
     //Benoetigten LinkedListen von Betriebsmittelgruppen zur Berechnung der Durchfuehrbarkeit
     private LinkedList<Betriebsmittelgruppe> betriebsmittelgruppe = new LinkedList<Betriebsmittelgruppe>();

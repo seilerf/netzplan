@@ -6,7 +6,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import edu.fh.netzcontroller.NetzplanController;
 import edu.fh.netzplanModell.Netzplan;
+import edu.fh.netzplanModell.Vorgang;
 import edu.fh.netzview.StartView;
+import java.util.LinkedList;
 
 
 public class App {
@@ -14,8 +16,8 @@ public class App {
         
         SQLConnect sql = new SQLConnect();
         Netzplan netz = new Netzplan();
-        Netzplanung netzPl; 
-        
+        Netzplanung netzPl = null; 
+        //StartView startview= new StartView();
         
         
        try {
@@ -26,5 +28,8 @@ public class App {
        } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
        }
+    
+    
+    StartView startview= new StartView(netzPl);
     }
 }

@@ -25,7 +25,7 @@ public class SQLConnect {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DATABASE_URL = "jdbc:mysql://localhost/netzplan";
     static final String USER = "root";
-    static final String PWD = "testpw";
+    static final String PWD = "asdfghjk1";
     
     private Connection conn;
     private LinkedList<Vorgang> vorgaenge;

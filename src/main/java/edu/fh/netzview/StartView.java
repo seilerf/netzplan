@@ -6,6 +6,7 @@
 
 package edu.fh.netzview;
 
+import edu.fh.application.Netzplanung;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
@@ -17,6 +18,8 @@ import edu.fh.netzcontroller.GanttController;
 import edu.fh.netzcontroller.NewNetzController;
 import edu.fh.netzcontroller.NetzOeffnenController;
 import edu.fh.netzcontroller.VorgangController;
+import edu.fh.netzplanModell.Vorgang;
+import java.util.LinkedList;
 import org.jfree.ui.RefineryUtilities;
 
 /**
@@ -24,12 +27,16 @@ import org.jfree.ui.RefineryUtilities;
  * @author fseiler
  */
 public class StartView extends JFrame{
+    Netzplanung netzPll;
     
-    public StartView(){
+    public StartView(   Netzplanung netzPl){
+        this.netzPll=netzPl;
         this.setVisible(true);
         this.setSize(400, 400);
         this.setTitle("Netzplan");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        //this.sortierteVorgänge=sortierteVorgänge;
         
         JMenuBar menuBar = new JMenuBar();
         JMenu netzplanMenu = new JMenu("Netzplan");
@@ -87,7 +94,18 @@ public class StartView extends JFrame{
         
         ganttView.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-             GanttController gantt = new GanttController();
+             
+             LinkedList<Vorgang> sortierteVorgaenge=netzPll.getSortierteVorgaenge();
+               for(int d=0; d<sortierteVorgaenge.size(); ++d) {
+            System.out.println("VorgangId: "+sortierteVorgaenge.get(d).getVorgangId());
+            System.out.println("VorgangsName: "+sortierteVorgaenge.get(d).getName());
+            System.out.println("VorgangsDauer: "+sortierteVorgaenge.get(d).getDauer());
+            System.out.println("VorgangsFaz: "+sortierteVorgaenge.get(d).getFaz());
+            System.out.println("VogangsFez:" +sortierteVorgaenge.get(d).getFez());
+            System.out.println("VorgangsSaz: "+sortierteVorgaenge.get(d).getSaz());
+            System.out.println("VorgangsSez: "+sortierteVorgaenge.get(d).getSez()+"\n\n\n");
+          }
+             GanttController gantt = new GanttController( netzPll);
         }
     }); 
         
