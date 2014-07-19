@@ -94,17 +94,7 @@ public class NetzplanController{
     private void setNetzplan(Netzplan netzplan){
         this.netzplanModel = netzplan;
     }
-    
-    /**
-     * Methode zum Laden eines Netzplans in die NetzplanView.
-     * @author Florian Seiler
-     */
-    private void ladeNetzplanInView(){
-        JScrollPane scrollpane = new JScrollPane(vorgangstabelle);
-        netzplanView.setScrollPane(scrollpane);
-        //netzplanView.revalidate();
-    }
-    
+
     /**
      * ActionListener für den Button "Öffnen", der in der ÖffnenView den ausgewähhlten Netzplan öffnet.
      * Vorher muss die Methode "createTable" aufgerufen, da die Tabelle sonst keine Daten beinhaltet.
@@ -118,9 +108,8 @@ public class NetzplanController{
                 System.out.println("Netzplan " + netzplan.getName() + " mit der ID " + id + " geladen!");
                 setNetzplan(netzplan);
                 oeffnenView.dispose();
-                erstelleVorgangsTabelle();
-                ladeNetzplanInView();
-
+                JScrollPane scrollpane = new JScrollPane(erstelleVorgangsTabelle());
+                netzplanView.setScrollPane(scrollpane);
             } catch (ArrayIndexOutOfBoundsException npe) {
                 System.out.println("Fehler: " + npe.getMessage());
             }
@@ -159,16 +148,21 @@ public class NetzplanController{
         Object[][] data = null;
         data = new Object[vorgangsliste.size()][2];
         
-        ListIterator<Vorgang> iterator = vorgangsliste.listIterator();
-        int i = 0;
-        for (Vorgang vorgang : vorgangsliste){
-            data[i][0] = vorgang.getName();
-            data[i][1] = vorgang.getDauer();
-            i++;
+        if(vorgangsliste.getFirst() == null){
+            data[0][0] = null;
         }
-        
-        System.out.println("Anzahl Vorgänge: " + vorgangsliste.size());
-        
+        else{
+            ListIterator<Vorgang> iterator = vorgangsliste.listIterator();
+            int i = 0;
+            Vorgang vorgang;
+            while (iterator.hasNext()){
+                vorgang = iterator.next();
+                data[i][0] = vorgang.getName();
+                data[i][1] = vorgang.getDauer();
+                i++;
+            }
+        }
+
         vorgangstabelle = new JTable(data, spalten);
         vorgangstabelle.setPreferredScrollableViewportSize(new Dimension(500, 70));
         vorgangstabelle.setFillsViewportHeight(true);

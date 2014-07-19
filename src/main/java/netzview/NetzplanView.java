@@ -6,6 +6,7 @@
 
 package netzview;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
@@ -56,7 +57,7 @@ public class NetzplanView extends AbstractView{
         this.setzeMenuEin();
         
         this.setVisible(true);
-        this.setSize(400, 400);
+        this.setSize(600, 400);
         this.setTitle("Netzplan");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -142,31 +143,13 @@ public class NetzplanView extends AbstractView{
      */
     private void setLayout(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(LEADING)
-                    .addComponent(scrollpane)
-                    .addGroup(TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 323, Short.MAX_VALUE)))
-        ));
-        
-        layout.setVerticalGroup(
-            layout.createParallelGroup(LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(scrollpane, PREFERRED_SIZE, 146, PREFERRED_SIZE)
-                .addPreferredGap(RELATED)
-                .addPreferredGap(RELATED)
-        ));
-
-        pack();
+        this.add(scrollpane);
     }
     
     public void setScrollPane(JScrollPane scrollpane) {
+        this.remove(this.scrollpane);
         this.scrollpane = scrollpane;
-        
+        this.add(scrollpane);
+        this.revalidate();
     }
 }

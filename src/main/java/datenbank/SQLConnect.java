@@ -132,7 +132,7 @@ public class SQLConnect {
                 netzplan.setEnde((Double)rsNetzplan.getObject("endZeit"));
             }    
             
-            String queryVorgaenge = "SELECT * FROM vorgang WHERE Netzplan_idNetzplan = 1";
+            String queryVorgaenge = "SELECT * FROM vorgang WHERE Netzplan_idNetzplan = "+id+"";
             ResultSet rsVorgaenge = this.getConnection().createStatement().executeQuery(queryVorgaenge);
             int i=1;
             while (rsVorgaenge.next()){
