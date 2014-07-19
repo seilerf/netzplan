@@ -7,13 +7,19 @@ import java.util.logging.Logger;
 import netzcontroller.NetzplanController;
 import netzplan.Netzplan;
 import netzview.StartView;
+import netzview.NetzplanView;
 
 
 public class App 
 {
     public static void main(String[] args) {
-        
+                
         SQLConnect sql = new SQLConnect();
+        
+        NetzplanController netzplanContr = new NetzplanController();
+        netzplanContr.showView();
+        netzplanContr.addNetzListener();
+        
         Netzplan netz = new Netzplan();
         Netzplanung netzPl; 
         

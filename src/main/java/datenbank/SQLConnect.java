@@ -6,9 +6,10 @@
 
 package datenbank;
 
-import java.awt.GridBagConstraints;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import java.sql.*;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import netzplan.Betriebsmittelgruppe;
@@ -24,7 +25,7 @@ public class SQLConnect {
     // MySQL Parameter
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DATABASE_URL = "jdbc:mysql://localhost/netzplan";
-    static final String USER = "root";
+    static final String USER = "oopuser";
     static final String PWD = "testpw";
     
     private Connection conn;
@@ -45,7 +46,12 @@ public class SQLConnect {
             this.conn = DriverManager.getConnection(DATABASE_URL,USER,PWD);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SQLConnect.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MySQLSyntaxErrorException mysqle){
+            /** Abfangen einer SyntaxException, wenn DB oder Tables nicht existieren. */
+            System.err.println("SyntaxException!");
+            System.out.println(mysqle.getSQLState());
         } catch (SQLException ex) {
+            System.err.println("Problem beim Verbindungsaufbau!");
             Logger.getLogger(SQLConnect.class.getName()).log(Level.SEVERE, null, ex);
         }      
     }
@@ -63,6 +69,7 @@ public class SQLConnect {
     
     /**
      * Getter für die Connection
+     * @return 
      */
     public Connection getConnection() {
         return this.conn;
@@ -77,46 +84,72 @@ public class SQLConnect {
     }
     
     /**
-     * Funktion um alle Netzplaene zu laden
-     * @return
-     * @throws SQLException 
+     * Diese Methode lädt alle Netzpläne ohne ihre Vorgänge aus der Datenbank
+     * und gibt eine verkettete Liste mit den gefunden Netzplänen wieder. 
+     * @return netzplaene - Eine Liste aller in der Datenbank vorhandenen Netzpläne
+     * @return null - wenn ein Fehler aufgetreten ist
      */
-    public LinkedList<Netzplan> ladeAlleNetzplaene() throws SQLException {
-        LinkedList<Netzplan> netzplaene = new LinkedList<Netzplan>();
-        this.startConnection();
-        String sqlQuery = "SELECT * FROM netzplan";
-        System.out.println("Lese Netzpläne aus Datenbank...");
-        ResultSet rsNetzplaene = this.getConnection().createStatement().executeQuery(sqlQuery);
+    public LinkedList<Netzplan> ladeAlleNetzplaene() {
         
-        while(rsNetzplaene.next()) {
-        Netzplan netzplan = new Netzplan((Integer)rsNetzplaene.getObject("idNetzplan"), (String)rsNetzplaene.getObject("nameNetzplan"), (Double)rsNetzplaene.getObject("startZeit"), (Double)rsNetzplaene.getObject("endZeit"));
-           netzplaene.add(netzplan);      
+        try {
+            LinkedList<Netzplan> netzplaene = new LinkedList<Netzplan>();
+            this.startConnection();
+            String sqlQuery = "SELECT * FROM netzplan";
+            System.out.println("Lese Netzpläne aus Datenbank...");
+            ResultSet rsNetzplaene = this.getConnection().createStatement().executeQuery(sqlQuery);
+            
+            while(rsNetzplaene.next()) {
+                Netzplan netzplan = new Netzplan((Integer)rsNetzplaene.getObject("idNetzplan"), (String)rsNetzplaene.getObject("nameNetzplan"), (Double)rsNetzplaene.getObject("startZeit"), (Double)rsNetzplaene.getObject("endZeit"));      
+                netzplaene.add(netzplan);
+            }
+            rsNetzplaene.close();
+            this.closeConnection();
+            
+            return netzplaene;
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLConnect.class.getName()).log(Level.SEVERE, null, ex);
         }
-        rsNetzplaene.close();
-        this.closeConnection();
-        
-        return netzplaene;
+        return null;
     }
     
     /**
      * 
-     * @param id
-     * @return
-     * @throws SQLException 
+     * @param id - ID des zu ladenden Netzplans
+     * @return netzplan - Netzplan mit allen zugehörigen Vorgängen
+     * @return null - wenn ein Fehler aufgetreten ist
      */
-    public Netzplan ladeNetzplan(int id) throws SQLException {
-        this.startConnection();
-        String sqlQuery = "SELECT * FROM netzplan WHERE idNetzplan = "+id+"";
-        ResultSet rsNetzplan = this.getConnection().createStatement().executeQuery(sqlQuery);
-        Netzplan netzplan = new Netzplan();
-        
-        while(rsNetzplan.next()){
-            netzplan = new Netzplan((Integer)rsNetzplan.getObject("idNetzplan"), (String)rsNetzplan.getObject("nameNetzplan"), (Double)rsNetzplan.getObject("startZeit"), (Double)rsNetzplan.getObject("endZeit"));
+    public Netzplan ladeNetzplan(int id) {
+        try {
+            this.startConnection();
+            String sqlQuery = "SELECT * FROM netzplan WHERE idNetzplan = "+id+"";
+            ResultSet rsNetzplan = this.getConnection().createStatement().executeQuery(sqlQuery);
+            Netzplan netzplan = new Netzplan();
 
+            while(rsNetzplan.next()){
+                netzplan.setId((Integer)rsNetzplan.getObject("idNetzplan"));
+                netzplan.setName((String)rsNetzplan.getObject("nameNetzplan"));
+                netzplan.setStart((Double)rsNetzplan.getObject("startZeit"));
+                netzplan.setEnde((Double)rsNetzplan.getObject("endZeit"));
+            }    
+            
+            String queryVorgaenge = "SELECT * FROM vorgang WHERE Netzplan_idNetzplan = 1";
+            ResultSet rsVorgaenge = this.getConnection().createStatement().executeQuery(queryVorgaenge);
+            int i=1;
+            while (rsVorgaenge.next()){
+                Vorgang vorgang = new Vorgang((Integer)rsVorgaenge.getObject("idVorgang"), (String)rsVorgaenge.getObject("nameVorgang"), (Double)rsVorgaenge.getObject("dauer"));
+                netzplan.addVorgang(vorgang);
+                i++;
+            }
+            
+            rsNetzplan.close();
+            this.closeConnection();
+            return netzplan;
         }
-        rsNetzplan.close();
-        this.closeConnection();
-        return netzplan;
+        catch (SQLException sqle){
+            System.out.println("SQL-Fehler:");
+            sqle.printStackTrace();
+            return null;
+        }
     }
 
     

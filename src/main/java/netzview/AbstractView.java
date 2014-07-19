@@ -6,10 +6,13 @@
 
 package netzview;
 
+import java.awt.Component;
+import javax.swing.JFrame;
+
 /**
  *
  * @author fseiler
  */
-public class AbstractView {
+public class AbstractView extends JFrame{
     
 }

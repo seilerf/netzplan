@@ -157,5 +157,4 @@ public class Vorgang extends Observable {
         }
             
     }
-    
 }

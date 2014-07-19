@@ -15,7 +15,6 @@ import javax.swing.JMenuItem;
 import netzcontroller.BmgController;
 import netzcontroller.GanttController;
 import netzcontroller.NewNetzController;
-import netzcontroller.NetzOeffnenController;
 import netzcontroller.VorgangController;
 import org.jfree.ui.RefineryUtilities;
 
@@ -25,54 +24,88 @@ import org.jfree.ui.RefineryUtilities;
  */
 public class StartView extends JFrame{
     
+    private JMenuBar menuBar;
+
+    private JMenu netzplanMenu;
+    private JMenu ansichtMenu;
+
+    private JMenuItem neu;
+    private JMenuItem oeffnen;
+    private JMenuItem speichern;
+    private JMenuItem vorgangNeu;
+    private JMenuItem beenden;
+    private JMenuItem ganttView;
+    private JMenuItem vorgangsZeit;
+    private JMenuItem bmgAuslast;
+
     public StartView(){
+        this.erzeugeMenu();
+        this.erstelleListener();
+        this.setzeMenuEin();
+        
         this.setVisible(true);
         this.setSize(400, 400);
         this.setTitle("Netzplan");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+    
+    private void erzeugeMenu(){
         
-        JMenuBar menuBar = new JMenuBar();
-        JMenu netzplanMenu = new JMenu("Netzplan");
-        JMenu ansichtMenu = new JMenu("Ansicht");
+        menuBar = new JMenuBar();
+
+        netzplanMenu = new JMenu("Netzplan");
+        ansichtMenu = new JMenu("Ansicht");
+
+        neu = new JMenuItem("Neu");
+        oeffnen = new JMenuItem("Öffnen...");
+        speichern = new JMenuItem("Speichern...");
+        vorgangNeu = new JMenuItem("Neuer Vorgang...");
+        beenden = new JMenuItem("Beenden");
+        ganttView = new JMenuItem("Gantt-Diagramm");
+        vorgangsZeit = new JMenuItem("Vorgangs-Zeit-Diagramm");
+        bmgAuslast = new JMenuItem("BMG-Auslastung");
+    }
+    
+    private void erstelleListener(){
         
-        JMenuItem neu = new JMenuItem("Neu");
+        neu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                NewNetzController netzcont = new NewNetzController();
+            }
+        });
         
-        
-           neu.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-             NewNetzController netzcont = new NewNetzController();
-        }
-    }); 
-        
-       
-        JMenuItem oeffnen = new JMenuItem("Öffnen...");
-        
-         oeffnen.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-             NetzOeffnenController netzoeffnen = new NetzOeffnenController();
-        }
-    }); 
-        
-        
-        JMenuItem speichern = new JMenuItem("Speichern...");
-        JMenuItem vorgangNeu = new JMenuItem("Neuer Vorgang...");
-        
+        /*oeffnen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                NetzOeffnenController netzoeffnen = new NetzOeffnenController();
+            }
+        }); */
         
         vorgangNeu.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-             VorgangController neuvorgang = new VorgangController();
-        }
-    }); 
-        
-        
-        JMenuItem beenden = new JMenuItem("Beenden");
+            public void actionPerformed(ActionEvent e) {
+                VorgangController neuvorgang = new VorgangController();
+            }
+        }); 
         
         beenden.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-              System.exit(0);
-        }
-    }); 
-       
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        
+        ganttView.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                GanttController gantt = new GanttController();
+            }
+        });
+        
+        bmgAuslast.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                 BmgController bmg = new BmgController();
+            }
+        });
+    }
+    
+    private void setzeMenuEin(){
         
         netzplanMenu.add(neu);
         netzplanMenu.add(oeffnen);
@@ -80,40 +113,14 @@ public class StartView extends JFrame{
         netzplanMenu.add(vorgangNeu);
         netzplanMenu.insertSeparator(4);
         netzplanMenu.add(beenden);
-        
-        
-        
-        JMenuItem ganttView = new JMenuItem("Gantt-Diagramm");
-        
-        ganttView.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-             GanttController gantt = new GanttController();
-        }
-    }); 
-        
-        
-        
-        
-        
-        JMenuItem vorgangsZeit = new JMenuItem("Vorgangs-Zeit-Diagramm");
-        JMenuItem bmgAuslast = new JMenuItem("BMG-Auslastung");
-        
-        
-            bmgAuslast.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-             BmgController bmg = new BmgController();
-        }
-    }); 
-        
-        
+
         ansichtMenu.add(ganttView);
         ansichtMenu.add(vorgangsZeit);
         ansichtMenu.add(bmgAuslast);
-        
+
         menuBar.add(netzplanMenu);
         menuBar.add(ansichtMenu);
         this.setJMenuBar(menuBar);
-        
-    }
     
+    }
 }
