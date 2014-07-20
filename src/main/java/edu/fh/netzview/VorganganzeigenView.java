@@ -22,7 +22,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
-import edu.fh.netzcontroller.VorgangController;
 import edu.fh.netzcontroller.VorganganzeigenController;
 import edu.fh.netzplanModell.Vorgang;
 import java.awt.event.ActionEvent;
@@ -40,11 +39,12 @@ public class VorganganzeigenView extends JFrame implements Observer{
         this.vorgang=vorgang;
         this.editable = false;
         this.setTitle(vorgang.getName());
-        this.setSize(350, 200);
+        this.setSize(400, 250);
         
         JMenuBar menu = new JMenuBar();
         JMenu menuVorgang = new JMenu("Vorgang");
         JMenuItem menuEnde = new JMenuItem("Schließen");
+        menuEnde.addActionListener(controller) ;
         
         menuVorgang.add(menuEnde);
         
@@ -100,25 +100,20 @@ public class VorganganzeigenView extends JFrame implements Observer{
         
             btnEditescape.setText("Schließen");
           // btnEditescape.addActionListener(btnEditescape,controller);
-        btnEditescape.addActionListener(new ActionListener() {
+        btnEditescape.addActionListener(controller) ;
  
-       
-
-            public void actionPerformed(ActionEvent e) {
-                controller.actionPerformed(txtDauer.getText());
-            }
-        });   
+         
         
         JButton btnEditSave = new JButton();
         
-            btnEditSave.setText("Speichern");
-            btnEditSave.addActionListener(controller);
-            
-            
+        btnEditSave.setText("Speichern");
+         
+        btnEditSave.addActionListener(new ActionListener() {
  
-       
-
-        
+            public void actionPerformed(ActionEvent e) {
+                controller.actionPerformed(txtDauer.getText());
+            }
+        });  
         
         // Zeichnen der Komponenten in das GUI
         //                                        x  y    b  h    wx wy

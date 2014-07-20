@@ -5,30 +5,38 @@
  */
 
 package edu.fh.netzview;
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Paint;
+import edu.fh.application.Netzplanung;
+import edu.fh.datenbank.SQLConnect;
+import edu.fh.netzcontroller.BmgController;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.LegendItem;
-import org.jfree.chart.LegendItemCollection;
-import org.jfree.chart.axis.SubCategoryAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
-import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.GradientPaintTransformType;
-import org.jfree.ui.RefineryUtilities;
-import org.jfree.ui.StandardGradientPaintTransformer;
-import java.util.Calendar;
-import java.util.Date;
-import javax.swing.JFrame;
-import edu.fh.netzcontroller.GanttController;
+import edu.fh.netzcontroller.VorganganzeigenController;
+import edu.fh.netzplanModell.Betriebsmittelgruppe;
+import edu.fh.netzplanModell.ChartModel;
+import edu.fh.netzplanModell.Vorgang;
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import static java.lang.String.valueOf;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
 
 
 
@@ -37,170 +45,96 @@ import edu.fh.netzcontroller.GanttController;
  *
  * @author Anton
  */
-public class BmgView extends JFrame {
+ public class BmgView extends ApplicationFrame {
+
+    private static final long serialVersionUID = 1L;
+  
+    
+    private Vorgang vorgangs;
     
     
-    public BmgView(final String title) {
-        
+    
+    private ChartModel chartmodel;
+    /**
+077     * Creates a new demo instance.
+078     *
+079     * @param title  the frame title.
+080     */
+    public BmgView(String title, final BmgController controller, final ChartModel chartmodel) {
         super(title);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        final CategoryDataset dataset = createDataset();
-        final JFreeChart chart = createChart(dataset);
-        final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(590, 350));
+        this.chartmodel=chartmodel;
+        CategoryDataset dataset = this.chartmodel.createDatasetBMG();
+        JFreeChart chart = createChart(dataset);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setFillZoomRectangle(true);
+        chartPanel.setMouseWheelEnabled(true);
+        chartPanel.setPreferredSize(new Dimension(500, 270));
         setContentPane(chartPanel);
+        chartPanel.setFocusable(true);
+
+        chartPanel.addChartMouseListener(new ChartMouseListener() {
+
+    public void chartMouseClicked(ChartMouseEvent e) {
+       
+        
+        controller.mousecklicked(e);
+
     }
+            public void chartMouseMoved(ChartMouseEvent event) {
+
+            }
+
+});
+        
+        chartPanel.addKeyListener(new KeyListener() {
+        
     
-    /**
-     * Creates a sample dataset.
-     * 
-     * @return A sample dataset.
-     */
-    private CategoryDataset createDataset() {
-        DefaultCategoryDataset result = new DefaultCategoryDataset();
 
-        result.addValue(20.3, "Product 1 (US)", "Jan 04");
-        result.addValue(27.2, "Product 1 (US)", "Feb 04");
-        result.addValue(19.7, "Product 1 (US)", "Mar 04");
-        result.addValue(19.4, "Product 1 (Europe)", "Jan 04");
-        result.addValue(10.9, "Product 1 (Europe)", "Feb 04");
-        result.addValue(18.4, "Product 1 (Europe)", "Mar 04");
-        result.addValue(16.5, "Product 1 (Asia)", "Jan 04");
-        result.addValue(15.9, "Product 1 (Asia)", "Feb 04");
-        result.addValue(16.1, "Product 1 (Asia)", "Mar 04");
-        result.addValue(13.2, "Product 1 (Middle East)", "Jan 04");
-        result.addValue(14.4, "Product 1 (Middle East)", "Feb 04");
-        result.addValue(13.7, "Product 1 (Middle East)", "Mar 04");
+            public void keyTyped(KeyEvent e) {
+                System.out.println("Taste wurde gedrückt");
+                try {
+                    controller.keyPressed(e);
+                } catch (SQLException ex) {
+                    Logger.getLogger(GanttView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
 
-        result.addValue(23.3, "Product 2 (US)", "Jan 04");
-        result.addValue(16.2, "Product 2 (US)", "Feb 04");
-        result.addValue(28.7, "Product 2 (US)", "Mar 04");
-        result.addValue(12.7, "Product 2 (Europe)", "Jan 04");
-        result.addValue(17.9, "Product 2 (Europe)", "Feb 04");
-        result.addValue(12.6, "Product 2 (Europe)", "Mar 04");
-        result.addValue(15.4, "Product 2 (Asia)", "Jan 04");
-        result.addValue(21.0, "Product 2 (Asia)", "Feb 04");
-        result.addValue(11.1, "Product 2 (Asia)", "Mar 04");
-        result.addValue(23.8, "Product 2 (Middle East)", "Jan 04");
-        result.addValue(23.4, "Product 2 (Middle East)", "Feb 04");
-        result.addValue(19.3, "Product 2 (Middle East)", "Mar 04");
+            public void keyReleased(KeyEvent e) {
+                
+            }
 
-        result.addValue(11.9, "Product 3 (US)", "Jan 04");
-        result.addValue(31.0, "Product 3 (US)", "Feb 04");
-        result.addValue(22.7, "Product 3 (US)", "Mar 04");
-        result.addValue(15.3, "Product 3 (Europe)", "Jan 04");
-        result.addValue(14.4, "Product 3 (Europe)", "Feb 04");
-        result.addValue(25.3, "Product 3 (Europe)", "Mar 04");
-        result.addValue(23.9, "Product 3 (Asia)", "Jan 04");
-        result.addValue(19.0, "Product 3 (Asia)", "Feb 04");
-        result.addValue(10.1, "Product 3 (Asia)", "Mar 04");
-        result.addValue(13.2, "Product 3 (Middle East)", "Jan 04");
-        result.addValue(15.5, "Product 3 (Middle East)", "Feb 04");
-        result.addValue(10.1, "Product 3 (Middle East)", "Mar 04");
+            public void keyPressed(KeyEvent e) {
+                
+            }
         
-        return result;
+        
+        });
     }
-    
-    /**
-     * Creates a sample chart.
-     * 
-     * @param dataset  the dataset for the chart.
-     * 
-     * @return A sample chart.
-     */
-    private JFreeChart createChart(final CategoryDataset dataset) {
 
-        final JFreeChart chart = ChartFactory.createStackedBarChart(
-            "Stacked Bar Chart Demo 4",  // chart title
-            "Category",                  // domain axis label
-            "Value",                     // range axis label
-            dataset,                     // data
-            PlotOrientation.VERTICAL,    // the plot orientation
-            true,                        // legend
-            true,                        // tooltips
-            false                        // urls
-        );
-        
-        GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
-        KeyToGroupMap map = new KeyToGroupMap("G1");
-        map.mapKeyToGroup("Product 1 (US)", "G1");
-        map.mapKeyToGroup("Product 1 (Europe)", "G1");
-        map.mapKeyToGroup("Product 1 (Asia)", "G1");
-        map.mapKeyToGroup("Product 1 (Middle East)", "G1");
-        map.mapKeyToGroup("Product 2 (US)", "G2");
-        map.mapKeyToGroup("Product 2 (Europe)", "G2");
-        map.mapKeyToGroup("Product 2 (Asia)", "G2");
-        map.mapKeyToGroup("Product 2 (Middle East)", "G2");
-        map.mapKeyToGroup("Product 3 (US)", "G3");
-        map.mapKeyToGroup("Product 3 (Europe)", "G3");
-        map.mapKeyToGroup("Product 3 (Asia)", "G3");
-        map.mapKeyToGroup("Product 3 (Middle East)", "G3");
-        renderer.setSeriesToGroupMap(map); 
-        
-        renderer.setItemMargin(0.0);
-        Paint p1 = new GradientPaint(
-            0.0f, 0.0f, new Color(0x22, 0x22, 0xFF), 0.0f, 0.0f, new Color(0x88, 0x88, 0xFF)
-        );
-        renderer.setSeriesPaint(0, p1);
-        renderer.setSeriesPaint(4, p1);
-        renderer.setSeriesPaint(8, p1);
-         
-        Paint p2 = new GradientPaint(
-            0.0f, 0.0f, new Color(0x22, 0xFF, 0x22), 0.0f, 0.0f, new Color(0x88, 0xFF, 0x88)
-        );
-        renderer.setSeriesPaint(1, p2); 
-        renderer.setSeriesPaint(5, p2); 
-        renderer.setSeriesPaint(9, p2); 
-        
-        Paint p3 = new GradientPaint(
-            0.0f, 0.0f, new Color(0xFF, 0x22, 0x22), 0.0f, 0.0f, new Color(0xFF, 0x88, 0x88)
-        );
-        renderer.setSeriesPaint(2, p3);
-        renderer.setSeriesPaint(6, p3);
-        renderer.setSeriesPaint(10, p3);
-            
-        Paint p4 = new GradientPaint(
-            0.0f, 0.0f, new Color(0xFF, 0xFF, 0x22), 0.0f, 0.0f, new Color(0xFF, 0xFF, 0x88)
-        );
-        renderer.setSeriesPaint(3, p4);
-        renderer.setSeriesPaint(7, p4);
-        renderer.setSeriesPaint(11, p4);
-        renderer.setGradientPaintTransformer(
-            new StandardGradientPaintTransformer(GradientPaintTransformType.HORIZONTAL)
-        );
-        
-        SubCategoryAxis domainAxis = new SubCategoryAxis("Product / Month");
-        domainAxis.setCategoryMargin(0.05);
-        domainAxis.addSubCategory("Product 1");
-        domainAxis.addSubCategory("Product 2");
-        domainAxis.addSubCategory("Product 3");
-        
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        plot.setDomainAxis(domainAxis);
-        //plot.setDomainAxisLocation(AxisLocation.TOP_OR_RIGHT);
-        plot.setRenderer(renderer);
-        plot.setFixedLegendItems(createLegendItems());
-        return chart;
-        
-    }
 
     /**
-     * Creates the legend items for the chart.  In this case, we set them manually because we
-     * only want legend items for a subset of the data series.
-     * 
-     * @return The legend items.
-     */
-    private LegendItemCollection createLegendItems() {
-        LegendItemCollection result = new LegendItemCollection();
-//        LegendItem item1 = new LegendItem("US", new Color(0x22, 0x22, 0xFF));
-  //      LegendItem item2 = new LegendItem("Europe", new Color(0x22, 0xFF, 0x22));
-    //    LegendItem item3 = new LegendItem("Asia", new Color(0xFF, 0x22, 0x22));
-      //  LegendItem item4 = new LegendItem("Middle East", new Color(0xFF, 0xFF, 0x22));
-//        result.add(item1);
-  //      result.add(item2);
-    //    result.add(item3);
-      //  result.add(item4);
-        return result;
-    }
+107     * Creates a sample chart.
+108     *
+109     * @param dataset  the dataset.
+110     *
+111     * @return The chart.
+112     */
+        private static JFreeChart createChart(CategoryDataset categorydataset)   
+    {   
+        JFreeChart jfreechart = ChartFactory.createStackedBarChart("BMG Auslastung", "Betriebsmittelgruppen", "Dauer", categorydataset, PlotOrientation.VERTICAL, false, false, false);   
+        CategoryPlot categoryplot = jfreechart.getCategoryPlot();   
+        StackedBarRenderer extendedstackedbarrenderer = new StackedBarRenderer();   
+        extendedstackedbarrenderer.setItemLabelsVisible(true);   
+        //extendedstackedbarrenderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator());   
+        extendedstackedbarrenderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());   
+        categoryplot.setRenderer(extendedstackedbarrenderer);   
+        ValueAxis valueaxis = categoryplot.getRangeAxis();   
+        valueaxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());   
+          
+        return jfreechart;   
+    }  
+
     
+    
+
 }

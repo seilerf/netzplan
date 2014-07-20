@@ -385,11 +385,12 @@ public class SQLConnect {
     public LinkedList<Betriebsmittelgruppe> ladeAlleBetrZuVorg(int vorgId, int netzPlanId) throws SQLException {
         LinkedList<Betriebsmittelgruppe> vorgBetr = new LinkedList<Betriebsmittelgruppe>();
         this.startConnection();
-        String sqlQuery = "SELECT * FROM Vorgang_has_Betriebsmittelgruppe WHERE Vorgang_idVorgang = "+ vorgId +" AND Vorgang_Netzplan_idNetzplan = "+ netzPlanId +"";
+        String sqlQuery = "SELECT  x.Betriebsmittelgruppe_idBetriebsmittelgruppe, b.nameBetriebsmittelgruppe FROM betriebsmittelgruppe b , ( Select c.Betriebsmittelgruppe_idBetriebsmittelgruppe from Vorgang_has_Betriebsmittelgruppe c where  c.Vorgang_idVorgang = "+ vorgId +" AND c.Vorgang_Netzplan_idNetzplan = "+ netzPlanId +") x where x.Betriebsmittelgruppe_idBetriebsmittelgruppe= b.idBetriebsmittelgruppe" ;
+        
         ResultSet rsVorg = this.getConnection().createStatement().executeQuery(sqlQuery);
         
          while(rsVorg.next()) {
-             Betriebsmittelgruppe betrMG = new Betriebsmittelgruppe((Integer) rsVorg.getObject("Betriebsmittelgruppe_idBetriebsmittelgruppe"));
+             Betriebsmittelgruppe betrMG = new Betriebsmittelgruppe((Integer) rsVorg.getObject("Betriebsmittelgruppe_idBetriebsmittelgruppe"), (String) rsVorg.getObject("nameBetriebsmittelgruppe"));
              vorgBetr.add(betrMG);
          }
          rsVorg.close();

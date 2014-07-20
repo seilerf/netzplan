@@ -6,7 +6,13 @@
 
 package edu.fh.netzcontroller;
 
+import edu.fh.application.Netzplanung;
+import edu.fh.netzplanModell.ChartModel;
+import edu.fh.netzplanModell.Vorgang;
 import edu.fh.netzview.BmgView;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import org.jfree.chart.ChartMouseEvent;
 import org.jfree.ui.RefineryUtilities;
 
 /**
@@ -14,12 +20,58 @@ import org.jfree.ui.RefineryUtilities;
  * @author Anton
  */
 public class BmgController {
-    
-     public BmgController() {
-     final BmgView bmg = new BmgView("Stacked Bar Chart Demo 4");
+        Netzplanung netzPll;
+        Netzplanung netzPll2;
+        BmgView bmg;
+        ChartModel chartmodel;
+     public BmgController( Netzplanung netzPl) {
+        this.netzPll=netzPl;
+        chartmodel = new  ChartModel(netzPll);
+        bmg = new BmgView("BMG Auslastung", this,   chartmodel);
         bmg.pack();
         RefineryUtilities.centerFrameOnScreen(bmg);
         bmg.setVisible(true);
-    }
-}
 
+     }
+     
+     
+     public void keyPressed(KeyEvent e) throws SQLException {
+        int key = e.getKeyCode();
+        System.out.println(key);
+        char keystr =e.getKeyChar();
+        System.out.println(keystr);
+        if(keystr == 'N'){
+         
+        
+         
+         bmg.dispose();
+         netzPll2 = new Netzplanung(netzPll.getIdNetzplan());
+         netzPll2.netzPlanBerechnung();
+         BmgController gc = new BmgController(netzPll2);
+    }
+     
+     
+}   
+     public void mousecklicked(ChartMouseEvent e){
+         
+        System.out.println(e.getEntity());
+        
+        
+        String string = e.getEntity().toString();
+        String[] parts = string.split(","); //erstes Komma entfernen
+        String part1 = parts[0]; // 004
+        String part2 = parts[1]; 
+        
+        
+        String[] parts3 = part1.split("="); //Endgültigen Namen bestimmen
+        String endstring = parts3[1];
+        System.out.println(endstring);
+        Vorgang vorgangs;
+        vorgangs=chartmodel.searchVorgang(endstring);
+        
+        
+        VorganganzeigenController vorgang = new VorganganzeigenController(vorgangs);
+     }
+
+
+}

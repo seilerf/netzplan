@@ -10,8 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import edu.fh.netzplanModell.Vorgang;
 import edu.fh.netzview.VorganganzeigenView;
-import javax.swing.JButton;
-import org.jfree.chart.entity.ChartEntity;
 
 /**
  *
@@ -32,7 +30,7 @@ public class VorganganzeigenController implements ActionListener{
         // Observer für die Modelle
         this.vorgang.addObserver(this.vorgangView);
         this.vorgangView.setVisible(true);
-        //vorgangView.pack();
+        vorgangView.pack();
         
     }
 
@@ -59,6 +57,10 @@ public class VorganganzeigenController implements ActionListener{
         vorgangView.dispose();
     }
 
+    
+    
+   
+    
     
 }
 

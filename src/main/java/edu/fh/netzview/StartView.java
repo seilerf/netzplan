@@ -95,16 +95,7 @@ public class StartView extends JFrame{
         ganttView.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
              
-             LinkedList<Vorgang> sortierteVorgaenge=netzPll.getSortierteVorgaenge();
-               for(int d=0; d<sortierteVorgaenge.size(); ++d) {
-            System.out.println("VorgangId: "+sortierteVorgaenge.get(d).getVorgangId());
-            System.out.println("VorgangsName: "+sortierteVorgaenge.get(d).getName());
-            System.out.println("VorgangsDauer: "+sortierteVorgaenge.get(d).getDauer());
-            System.out.println("VorgangsFaz: "+sortierteVorgaenge.get(d).getFaz());
-            System.out.println("VogangsFez:" +sortierteVorgaenge.get(d).getFez());
-            System.out.println("VorgangsSaz: "+sortierteVorgaenge.get(d).getSaz());
-            System.out.println("VorgangsSez: "+sortierteVorgaenge.get(d).getSez()+"\n\n\n");
-          }
+            
              GanttController gantt = new GanttController( netzPll);
         }
     }); 
@@ -119,7 +110,7 @@ public class StartView extends JFrame{
         
             bmgAuslast.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-             BmgController bmg = new BmgController();
+             BmgController bmg = new BmgController(netzPll);
         }
     }); 
         

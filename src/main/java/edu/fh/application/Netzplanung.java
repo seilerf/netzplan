@@ -34,6 +34,12 @@ public class Netzplanung {
     //Hilfsreferenz auf die Listengroeße
     private int refInitSize;
     //Hilfsreferenz auf die Listengroeße
+    private int idNetzplan;
+
+    public int getIdNetzplan() {
+        return idNetzplan;
+    }
+    //Hilfsparameter für die NetzplanID
     private int refBackInitSize;
     //Referenz auf den zu bearbeitenden Netzplan
     private Netzplan netz;
@@ -56,21 +62,25 @@ public class Netzplanung {
     private LinkedList<Vorgang> vorgaengerCash = new LinkedList<Vorgang>();
     //Benoetigten LinkedListen von Betriebsmittelgruppen zur Berechnung der Durchfuehrbarkeit
     private LinkedList<Betriebsmittelgruppe> betriebsmittelgruppe = new LinkedList<Betriebsmittelgruppe>();
+
+  
     private LinkedList<Betriebsmittelgruppe> bmgCach = new LinkedList<Betriebsmittelgruppe>();
     private LinkedList<Betriebsmittelgruppe> bmgOutOfKapa = new LinkedList<Betriebsmittelgruppe>();
     
-
+    private LinkedList<Betriebsmittelgruppe> vorghasbmg = new LinkedList<Betriebsmittelgruppe>();
     //Konstruktor mit Uebergabe des Netzplanes
     public Netzplanung(int idNetzplan) throws SQLException {
         //Checkt ob die uebergebene Netzplan-Id ueberhaupt existiert
         if(con.checkNetzplanId(idNetzplan)==true) {
             this.netz = con.ladeNetzplan(idNetzplan);
             vorgangList = this.con.ladeVorgaenge(idNetzplan);
+            
             this.netz.setGesamtPuffer(vorgangList.size());
             this.netz.setFreierPuffer(MAX-vorgangList.size());
             this.vorgangList = new LinkedList<Vorgang>(con.ladeVorgaenge(idNetzplan));
             this.initVorgang = new LinkedList<Vorgang>();
             this.backInit = new LinkedList<Vorgang>();
+            this.idNetzplan=idNetzplan;
             this.netzDurabilityCheck = false;
         } else {
             System.out.println("Die Netzplanung kann nicht durchgeführt werden!\n");
@@ -282,4 +292,10 @@ public class Netzplanung {
         return checkBmg;
     }
         
+    
+    
+      public LinkedList<Betriebsmittelgruppe> getBetriebsmittelgruppe() {
+        return betriebsmittelgruppe;
+    }
+    
 }

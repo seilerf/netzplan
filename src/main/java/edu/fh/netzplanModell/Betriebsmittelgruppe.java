@@ -45,6 +45,13 @@ public class Betriebsmittelgruppe extends Observable {
         this.nameBetrMittelGr = name;
         this.betrMittelKapa = kapa;
     }
+     
+     //Konstruktor ohne die Referenz auf die Vorgangs-Id und die kapazität
+     public Betriebsmittelgruppe(int id, String name) {
+        this.betrMittelGrId = id;
+        this.nameBetrMittelGr = name;
+       
+    }
             
     
      /**
