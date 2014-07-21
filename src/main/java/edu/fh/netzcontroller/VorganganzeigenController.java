@@ -23,12 +23,9 @@ public class VorganganzeigenController implements ActionListener{
     public VorganganzeigenController(Vorgang vorgangs) {
         //Modell
         this.vorgang = vorgangs;
-        //this.vorgang.setName("Neuer Vorgang");
         // View
         this.vorgangView = new VorganganzeigenView(this,vorgang);
         
-        // Observer für die Modelle
-        this.vorgang.addObserver(this.vorgangView);
         this.vorgangView.setVisible(true);
         vorgangView.pack();
         

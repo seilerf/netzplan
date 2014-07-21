@@ -31,7 +31,7 @@ import java.awt.event.ActionListener;
  *
  * @author Anton
  */
-public class VorganganzeigenView extends JFrame implements Observer{
+public class VorganganzeigenView extends JFrame {
 
     private boolean editable;
     private Vorgang vorgang;
@@ -159,10 +159,6 @@ public class VorganganzeigenView extends JFrame implements Observer{
         cont.add(c);
     }
 
-    
-    
-    public void update(Observable o, Object arg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
     
 }

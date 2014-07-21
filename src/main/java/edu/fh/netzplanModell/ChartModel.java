@@ -22,7 +22,6 @@ import org.jfree.data.category.IntervalCategoryDataset;
 import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
-import org.jfree.data.time.SimpleTimePeriod;
 
 /**
  *
@@ -44,44 +43,33 @@ public class ChartModel {
 
     }
     /**
-     * Creates a sample dataset for a Gantt chart.
-     *
-     * @return The dataset.
+     * Erstellt das Dataset mit den Vorgängen für das Ganttchart
+     * benutzt die sortierten Vorgänge von der Netzplanung
+     * @return  dataset
      */
     public  IntervalCategoryDataset createDatasetGantt() {
         
-       
-      
         final TaskSeries s1 = new TaskSeries("Vorgänge");
         final TaskSeries s2 = new TaskSeries("Puffer");
         
         Iterator<Vorgang> itr = vorgangList.iterator();
-        
-        
-        
-        
         Vorgang suchvorgang = null;
         
-   while (itr.hasNext()) {
-        suchvorgang= itr.next();
-        
-        Task task = new Task(suchvorgang.getName(), new Date((long) suchvorgang.getFaz()), new Date((long) (suchvorgang.getFez())));
-       s1.add(task);
-        String s = "s";
-               
-              
-        
-        //subtask.setPercentComplete(0.00);
-        //task.addSubtask(subtask);
-        
-        Task subtask = new Task(suchvorgang.getName()  ,new Date((long) suchvorgang.getFez()), new Date((long) (suchvorgang.getSez())));
-        s2.add(subtask);
-        
-       
-    }
-        
-      
+        //geht die sortierten vorgangsliste durch und erstellt jeweils ein Task auf dem Chart + Puffer
+            while (itr.hasNext()) {
+                 suchvorgang= itr.next();
 
+                 // Task aus der Vorgangs liste
+                 Task task = new Task(suchvorgang.getName(), new Date((long) suchvorgang.getFaz()), new Date((long) (suchvorgang.getFez())));
+                s1.add(task);
+                 String s = "s";
+
+                 // Puffer des Task darüber
+                 Task subtask = new Task(suchvorgang.getName()  ,new Date((long) suchvorgang.getFez()), new Date((long) (suchvorgang.getSez())));
+                 s2.add(subtask);
+
+             }
+        
         TaskSeriesCollection collection = new TaskSeriesCollection();
         collection.add(s1);
         collection.add(s2);
@@ -94,59 +82,53 @@ public class ChartModel {
     
     
     
-    
+    /**
+     * Erstellt das Dataset mit den BMG und dazugehörigen Vorgängen für das BmgChart
+     * benutzt die sortierten Vorgänge von der Netzplanung
+     * zu einem Vorgang werden die Betriebsmittel geladen, welche dieser benutzt
+     * @return  dataset
+     */
      public CategoryDataset createDatasetBMG() {
        DefaultCategoryDataset result = new DefaultCategoryDataset() ;
 
-        
+       Iterator<Vorgang> itr = vorgangList.iterator();
+       Vorgang suchvorgang = null;
        
-        
-        Iterator<Vorgang> itr = vorgangList.iterator();
-        
-       
-        Vorgang suchvorgang = null;
-        
-        
-        
-       
-        
-        
-        
-    while (itr.hasNext()) {
-        suchvorgang=itr.next();
-        
-        betriebsmittelgruppe.clear();
-           try {
-               betriebsmittelgruppe=con.ladeAlleBetrZuVorg(suchvorgang.getVorgangId(),netzPl.getIdNetzplan());
+        //geht die sortierte vorgangsliste durch 
+            while (itr.hasNext()) {
+                suchvorgang=itr.next();
+
+                betriebsmittelgruppe.clear(); //geladenenBetriebsmittel werden immer zurückgesetzt, weil sie jeweils nur für einen Vorgang geladen werden
+                   // es werden die Betriebsmittel zu dem einen Vorgang geladen
+                try {
+                       betriebsmittelgruppe=con.ladeAlleBetrZuVorg(suchvorgang.getVorgangId(),netzPl.getIdNetzplan());
+
+                               Iterator<Betriebsmittelgruppe> itrbet = betriebsmittelgruppe.iterator();
+                               Betriebsmittelgruppe betmittel = null;
+                               
+                        //geht die Betriebsmittel zu einem VOrgang durch 
+                        while (itrbet.hasNext())
+                         {   
+                             betmittel=itrbet.next();
+                             String n = valueOf(betmittel.getBetrMittelGrId());
+
+                             //fügt einen Datensatz mit jeweils einem Vorgang und einem Betriebsmittel dem Datenset hinzu
+                             result.addValue(suchvorgang.getDauer(),suchvorgang.getName(),betmittel.getNameBetrMittelGr());
+
+                         }
                        
-                       Iterator<Betriebsmittelgruppe> itrbet = betriebsmittelgruppe.iterator();
-                       Betriebsmittelgruppe betmittel = null;
-          
-               while (itrbet.hasNext())
-                {   
-                    betmittel=itrbet.next();
-                    String n = valueOf(betmittel.getBetrMittelGrId());
-                   
-                    result.addValue(suchvorgang.getDauer(),suchvorgang.getName(),betmittel.getNameBetrMittelGr());
-                    
+                     } 
+                   catch (SQLException ex) {
+                               Logger.getLogger(BmgView.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
 
                 }
-           } catch (SQLException ex) {
-               Logger.getLogger(BmgView.class.getName()).log(Level.SEVERE, null, ex);
-           }
-                
-      
-     
-    }
 
-        
-        
-        
         return result;
     }
     
     /**
-     *
+     *  Bekommt den Namen des angeklickten Vorgangs auf dem Chart und sucht das entsprechende Vorgangsobjekt
      * @param angeklicktervorgang
      * @return gesuchter Vorgang - suchvorgang
      */
@@ -163,12 +145,9 @@ public class ChartModel {
 
       }
       
-     
     }
         
         return null;
     }
-    
-    
     
 }

@@ -24,7 +24,12 @@ public class BmgController {
         Netzplanung netzPll2;
         BmgView bmg;
         ChartModel chartmodel;
-     public BmgController( Netzplanung netzPl) {
+
+    /**
+     * Aktualisierung des Netzplans auf die Taste "N" und anschließende aktualisierung des Charts
+     * @param netzPl
+     */
+    public BmgController( Netzplanung netzPl) {
         this.netzPll=netzPl;
         chartmodel = new  ChartModel(netzPll);
         bmg = new BmgView("BMG Auslastung", this,   chartmodel);
@@ -33,16 +38,18 @@ public class BmgController {
         bmg.setVisible(true);
 
      }
-     
-     
-     public void keyPressed(KeyEvent e) throws SQLException {
+
+    /**
+     * Aktualisierung des Netzplans auf die Taste "N" und anschließende aktualisierung des Charts
+     * @param e
+     * @throws SQLException
+     */
+    public void keyPressed(KeyEvent e) throws SQLException {
         int key = e.getKeyCode();
         System.out.println(key);
         char keystr =e.getKeyChar();
         System.out.println(keystr);
         if(keystr == 'N'){
-         
-        
          
          bmg.dispose();
          netzPll2 = new Netzplanung(netzPll.getIdNetzplan());
@@ -50,8 +57,14 @@ public class BmgController {
          BmgController gc = new BmgController(netzPll2);
     }
      
-     
 }   
+    
+    /**
+     * Kürzt den Chart string (vom klicken) auf den Vorgangsnamen
+     * führt die Suche des Vorgangs zum Namen aus
+     * öffnet das Vorgang anzeigen Fenster zum bearbeiten des angeklickten Vorgangs
+     * @param e
+     */
      public void mousecklicked(ChartMouseEvent e){
          
         System.out.println(e.getEntity());

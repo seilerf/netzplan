@@ -5,8 +5,6 @@
  */
 
 package edu.fh.netzview;
-import edu.fh.application.Netzplanung;
-import edu.fh.datenbank.SQLConnect;
 import edu.fh.netzcontroller.BmgController;
 
 import org.jfree.chart.ChartFactory;
@@ -15,24 +13,17 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
-import edu.fh.netzcontroller.VorganganzeigenController;
-import edu.fh.netzplanModell.Betriebsmittelgruppe;
 import edu.fh.netzplanModell.ChartModel;
 import edu.fh.netzplanModell.Vorgang;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import static java.lang.String.valueOf;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
-import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
@@ -47,19 +38,16 @@ import org.jfree.chart.renderer.category.StackedBarRenderer;
  */
  public class BmgView extends ApplicationFrame {
 
-    private static final long serialVersionUID = 1L;
-  
-    
     private Vorgang vorgangs;
-    
-    
-    
+   
     private ChartModel chartmodel;
     /**
-077     * Creates a new demo instance.
-078     *
-079     * @param title  the frame title.
-080     */
+     * Chartmodel konstruktor bei Aufruf neuer Bmg Chart
+     *
+     * @param Titel 
+     * @param controller
+     * @param chartmodel 
+     */
     public BmgView(String title, final BmgController controller, final ChartModel chartmodel) {
         super(title);
         this.chartmodel=chartmodel;
@@ -89,7 +77,10 @@ import org.jfree.chart.renderer.category.StackedBarRenderer;
         chartPanel.addKeyListener(new KeyListener() {
         
     
-
+    /**
+     * @param e
+     * ruft auf dem Controller die Keypressed Methode auf
+     */
             public void keyTyped(KeyEvent e) {
                 System.out.println("Taste wurde gedrückt");
                 try {
@@ -113,12 +104,12 @@ import org.jfree.chart.renderer.category.StackedBarRenderer;
 
 
     /**
-107     * Creates a sample chart.
-108     *
-109     * @param dataset  the dataset.
-110     *
-111     * @return The chart.
-112     */
+     * Kreiert das BmgChart.
+     * 
+     * @param categorydataset  
+     * 
+     * @return das Bmgchart.
+     */
         private static JFreeChart createChart(CategoryDataset categorydataset)   
     {   
         JFreeChart jfreechart = ChartFactory.createStackedBarChart("BMG Auslastung", "Betriebsmittelgruppen", "Dauer", categorydataset, PlotOrientation.VERTICAL, false, false, false);   

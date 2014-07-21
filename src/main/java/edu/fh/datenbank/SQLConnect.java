@@ -17,7 +17,7 @@ import edu.fh.netzplanModell.Vorgang;
 
 /**
  *
- * @author fseiler/ M.Ullmann
+ * @author fseiler/ M.Ullmann /Anton Lutset
  */
 public class SQLConnect {
     
