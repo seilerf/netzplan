@@ -6,10 +6,12 @@
 
 package edu.fh.netzcontroller;
 
+import edu.fh.datenbank.SQLConnect;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import edu.fh.netzplanModell.Vorgang;
 import edu.fh.netzview.VorganganzeigenView;
+import java.sql.SQLException;
 
 /**
  *
@@ -19,6 +21,7 @@ public class VorganganzeigenController implements ActionListener{
 
     private Vorgang vorgang;
     private VorganganzeigenView vorgangView;
+    private SQLConnect con = new SQLConnect();
 
     public VorganganzeigenController(Vorgang vorgangs) {
         //Modell
@@ -35,12 +38,13 @@ public class VorganganzeigenController implements ActionListener{
      *  Bei Drücken des Speichern Buttons werde die Werte an das Objekt übergeben
      * @param  vorgang
      */
-    public void actionPerformed(String vorgang) {
+    public void actionPerformed(String dauer, String name) throws SQLException {
         
         
         //this.vorgang= vorgang;
-        this.vorgang.setDauer(Double.parseDouble(vorgang));
-         
+        this.vorgang.setDauer(Double.parseDouble(dauer));
+        this.vorgang.setName(name);
+        con.updateVorgang(this.vorgang.getName(), this.vorgang.getDauer(), this.vorgang.getVorgangId());
          
     }
     

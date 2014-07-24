@@ -22,6 +22,7 @@ import java.awt.event.KeyListener;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.axis.NumberAxis;
@@ -36,7 +37,7 @@ import org.jfree.chart.renderer.category.StackedBarRenderer;
  *
  * @author Anton
  */
- public class BmgView extends ApplicationFrame {
+ public class BmgView extends JFrame {
 
     private Vorgang vorgangs;
    
@@ -50,6 +51,8 @@ import org.jfree.chart.renderer.category.StackedBarRenderer;
      */
     public BmgView(String title, final BmgController controller, final ChartModel chartmodel) {
         super(title);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         this.chartmodel=chartmodel;
         CategoryDataset dataset = this.chartmodel.createDatasetBMG();
         JFreeChart chart = createChart(dataset);

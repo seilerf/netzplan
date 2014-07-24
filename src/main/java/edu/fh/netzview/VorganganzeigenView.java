@@ -26,6 +26,9 @@ import edu.fh.netzcontroller.VorganganzeigenController;
 import edu.fh.netzplanModell.Vorgang;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -91,9 +94,10 @@ public class VorganganzeigenView extends JFrame {
         txtPuffer.setHorizontalAlignment(SwingConstants.CENTER);
         txtPuffer.setEditable(true);
         
-        JComboBox combobox = new JComboBox();
-        combobox.setBorder(new TitledBorder("Netzplan:"));
-        //combobox.setHorizontalAlignment(SwingConstants.CENTER);
+        final JTextField name = new JTextField(vorgang.getName());
+        name.setBorder(new TitledBorder("Name:"));
+        name.setHorizontalAlignment(SwingConstants.CENTER);
+        name.setEditable(true);
        
         
         JButton btnEditescape = new JButton();
@@ -111,7 +115,11 @@ public class VorganganzeigenView extends JFrame {
         btnEditSave.addActionListener(new ActionListener() {
  
             public void actionPerformed(ActionEvent e) {
-                controller.actionPerformed(txtDauer.getText());
+                try {
+                    controller.actionPerformed(txtDauer.getText(), name.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(VorganganzeigenView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });  
         
@@ -122,7 +130,7 @@ public class VorganganzeigenView extends JFrame {
         addComponent(inhalt, gbl, txtDauer,       1, 1,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtFEZ,         2, 1,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtSAZ,         0, 3,   1, 1,   3, 0);
-        
+        addComponent(inhalt, gbl, name,           1, 3,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtSEZ,         2, 3,   1, 1,   3, 0);
         addComponent(inhalt, gbl, btnEditSave,    0, 5,   1, 1,   4.5, 0);
         addComponent(inhalt, gbl, btnEditescape,  1, 5,   1, 1,   4.5, 0);

@@ -421,4 +421,22 @@ public class SQLConnect {
         this.closeConnection();
         return betriebsMittel;
     }
+    
+    /**
+     * Funktion um eine Änderung im Vorgang in die DB zu speichern.
+     * @param name -> name des Vorgangs
+     * @param dauer -> dauer des VOrgangs 
+     * @param id -> Id des Vorgangs 
+     * 
+     * @throws SQLException 
+     */
+    public void updateVorgang(String name, double dauer, int id) throws SQLException {
+        this.startConnection();
+        String sqlQuery = "UPDATE vorgang SET nameVorgang = '"+name+"', dauer ="+dauer+"  WHERE idVorgang = "+id+"";
+        this.getConnection().createStatement().executeUpdate(sqlQuery);
+        this.closeConnection();
+    }
+    
+     
+    
 }
