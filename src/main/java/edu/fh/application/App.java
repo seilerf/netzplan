@@ -6,8 +6,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import netzcontroller.NetzplanController;
 import netzplan.Netzplan;
-import netzview.StartView;
-import netzview.NetzplanView;
 
 
 public class App 
@@ -17,8 +15,6 @@ public class App
         SQLConnect sql = new SQLConnect();
         
         NetzplanController netzplanContr = new NetzplanController();
-        netzplanContr.showView();
-        netzplanContr.addNetzListener();
         
         Netzplan netz = new Netzplan();
         Netzplanung netzPl; 

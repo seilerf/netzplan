@@ -9,22 +9,16 @@ package netzview;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.GroupLayout;
-import static javax.swing.GroupLayout.Alignment.LEADING;
-import static javax.swing.GroupLayout.Alignment.TRAILING;
-import static javax.swing.GroupLayout.PREFERRED_SIZE;
-import javax.swing.GroupLayout.*;
+import java.awt.event.MouseListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import netzcontroller.BmgController;
 import netzcontroller.GanttController;
 import netzcontroller.NewNetzController;
-import netzcontroller.VorgangController;
 
 /**
  *
@@ -47,10 +41,12 @@ public class NetzplanView extends AbstractView{
     private JMenuItem bmgAuslast;
     
     private JScrollPane scrollpane;
+    private JButton btnVorgangOeffnen;
 
     public NetzplanView(){
         this.scrollpane = new JScrollPane();
         this.add(scrollpane);
+        this.btnVorgangOeffnen = new JButton("Vorgang öffnen");
         
         this.erzeugeMenu();
         this.erstelleListener();
@@ -85,6 +81,14 @@ public class NetzplanView extends AbstractView{
         this.oeffnen.addActionListener(l);
     }
     
+    public void setVorgangNeuListener(ActionListener l){
+        this.vorgangNeu.addActionListener(l);
+    }
+    
+    public void setVorgangOeffnenListener(ActionListener l){
+        this.btnVorgangOeffnen.addActionListener(l);
+    }
+    
     private void erstelleListener(){
         
         neu.addActionListener(new ActionListener() {
@@ -92,12 +96,6 @@ public class NetzplanView extends AbstractView{
                 NewNetzController netzcont = new NewNetzController();
             }
         });
-        
-        vorgangNeu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                VorgangController neuvorgang = new VorgangController();
-            }
-        }); 
         
         beenden.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -119,7 +117,6 @@ public class NetzplanView extends AbstractView{
     }
     
     private void setzeMenuEin(){
-        
         netzplanMenu.add(neu);
         netzplanMenu.add(oeffnen);
         netzplanMenu.add(speichern);
@@ -134,7 +131,6 @@ public class NetzplanView extends AbstractView{
         menuBar.add(netzplanMenu);
         menuBar.add(ansichtMenu);
         this.setJMenuBar(menuBar);
-    
     }
     
     /**
@@ -149,7 +145,8 @@ public class NetzplanView extends AbstractView{
     public void setScrollPane(JScrollPane scrollpane) {
         this.remove(this.scrollpane);
         this.scrollpane = scrollpane;
-        this.add(scrollpane);
+        this.add(scrollpane, BorderLayout.CENTER);
+        this.add(btnVorgangOeffnen, BorderLayout.SOUTH);
         this.revalidate();
     }
 }

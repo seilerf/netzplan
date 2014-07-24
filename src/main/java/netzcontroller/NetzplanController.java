@@ -8,16 +8,21 @@ package netzcontroller;
 
 import datenbank.SQLConnect;
 import java.awt.Dimension;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Vector;
-import static javax.swing.GroupLayout.PREFERRED_SIZE;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import netzplan.Netzplan;
 import netzplan.Vorgang;
 import netzview.NetzplanView;
@@ -32,7 +37,7 @@ public class NetzplanController{
     // Model
     private Netzplan netzplanModel;
     // Views
-    private NetzplanView netzplanView;
+    private final NetzplanView netzplanView;
     private OeffnenView oeffnenView;
     // Tabelle zu Auflistung der Netzpläne in der OeffnenView
     private JTable netzplantabelle;
@@ -46,6 +51,8 @@ public class NetzplanController{
     public NetzplanController() {
         this.netzplanModel = new Netzplan();
         this.netzplanView = new NetzplanView();
+        this.showView();
+        this.addListener();
     }
     
     /**
@@ -60,32 +67,12 @@ public class NetzplanController{
      * Methode zum Hinzufügen der Listener zur NetzplanView
      * @author Florian Seiler
      */
-    public void addNetzListener(){
+    public final void addListener(){
         this.netzplanView.setMenuOeffnenListener(new MenuOeffnenListener());
+        this.netzplanView.setVorgangNeuListener(new VorgangNeuListener());
+        this.netzplanView.setVorgangOeffnenListener(new VorgangOeffnenListener());
     }
-    
-    /**
-     * Methode zum Hinzufügen der Listener zur OeffnenView
-     * @author Florian Seiler
-     */
-    public void addOeffnenListener(){
-        oeffnenView.setBtnOeffnenListener(new btnOeffnenListener());
-    }
-    
-    /**
-     * Listener für den Menüeintrag "Öffnen" in der NetzplanView.
-     * @author Florian Seiler
-     */
-    class MenuOeffnenListener implements ActionListener{
 
-        public void actionPerformed(ActionEvent e) {
-            erstelleNetzplanTabelle();
-            oeffnenView = new OeffnenView(netzplantabelle);
-            addOeffnenListener();
-            oeffnenView.setVisible(true);
-        }
-    }
-    
     /**
      * Ändert im zugehörigen Modell den Netzplan.
      * @param netzplan
@@ -95,6 +82,58 @@ public class NetzplanController{
         this.netzplanModel = netzplan;
     }
 
+    /**
+     * Listener für den Menüeintrag "Öffnen" in der NetzplanView.
+     * @author Florian Seiler
+     */
+    class MenuOeffnenListener implements ActionListener{
+        public void actionPerformed(ActionEvent e) {
+            erstelleNetzplanTabelle();
+            oeffnenView = new OeffnenView(netzplantabelle);
+            oeffnenView.setBtnOeffnenListener(new btnOeffnenListener());
+            oeffnenView.setVisible(true);
+        }
+    }
+    
+    /**
+     * Listener für das Öffnen des Dialogs zum Anlegen eines neuen Vorgangs
+     * @author Florian Seiler
+     */
+    class VorgangNeuListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Netzplan-ID: " + netzplanModel.getId());
+            VorgangController vorgangContr = new VorgangController(erstelleNetzplanListe());
+        }
+    }
+    
+    /**
+     * Listener, um per Doppelklick auf einen Eintrag in der Vorgangstabelle eine Detailansicht zu öffnen.
+     * @author Florian Seiler
+     */
+    class VorgangOeffnenListener implements ActionListener{
+        public void actionPerformed(ActionEvent e) {
+            int id;
+            VorgangController vorgangContr;
+            try {
+                id = (Integer)vorgangstabelle.getValueAt(vorgangstabelle.getSelectedRow(), 0);
+                Vorgang vorgang = new SQLConnect().ladeVorgang(id);
+                vorgangContr = new VorgangController(erstelleNetzplanListe(), vorgang);
+            } catch (NullPointerException npe){
+                System.out.println("Nullpointer");
+                id = 0;
+                vorgangContr = new VorgangController(erstelleNetzplanListe());
+                System.out.println("NetzplanView wieder aufgerufen.");
+                netzplanView.repaint();
+            } catch (SQLException ex) {
+                System.out.println("SQL-Exc.");
+                id = 0;
+                vorgangContr = new VorgangController(erstelleNetzplanListe());
+                System.out.println("NetzplanView wieder aufgerufen.");
+                netzplanView.repaint();
+            }
+        }
+    }
+    
     /**
      * ActionListener für den Button "Öffnen", der in der ÖffnenView den ausgewähhlten Netzplan öffnet.
      * Vorher muss die Methode "createTable" aufgerufen, da die Tabelle sonst keine Daten beinhaltet.
@@ -115,7 +154,19 @@ public class NetzplanController{
             }
         }
     }
-        
+    
+    private String[] erstelleNetzplanListe(){
+        LinkedList<Netzplan> netzplanListe = new SQLConnect().ladeAlleNetzplaene();
+        String[] netzplaene = new String[netzplanListe.size()];
+        int i=0;
+        for (Netzplan netzplan : netzplanListe){
+            netzplaene[i] = netzplan.getName();
+            i++;
+        }
+        System.out.println("Netzplan: " + netzplaene[0]);
+        return netzplaene;
+    }
+    
     /**
      * Erstellt eine Tabelle, die in der ÖffnenView alle Netzpläne zur Auswahl auflistet
      * @author Florian Seiler
@@ -144,28 +195,30 @@ public class NetzplanController{
      */
     private JTable erstelleVorgangsTabelle(){
         LinkedList<Vorgang> vorgangsliste = this.netzplanModel.getVorgaenge();
-        String[] spalten = {"Vorgangsname", "Dauer"};
+        String[] spalten = {"ID", "Vorgangsname", "Dauer"};
         Object[][] data = null;
-        data = new Object[vorgangsliste.size()][2];
+        data = new Object[vorgangsliste.size()][3];
         
-        if(vorgangsliste.getFirst() == null){
-            data[0][0] = null;
-        }
-        else{
+        try{
             ListIterator<Vorgang> iterator = vorgangsliste.listIterator();
             int i = 0;
             Vorgang vorgang;
             while (iterator.hasNext()){
                 vorgang = iterator.next();
-                data[i][0] = vorgang.getName();
-                data[i][1] = vorgang.getDauer();
+                data[i][0] = vorgang.getVorgangId();
+                data[i][1] = vorgang.getName();
+                data[i][2] = vorgang.getDauer();
                 i++;
             }
         }
+        catch(NullPointerException e){
+            data[0][0] = null;
+        }
 
-        vorgangstabelle = new JTable(data, spalten);
-        vorgangstabelle.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        vorgangstabelle.setFillsViewportHeight(true);
+        vorgangstabelle = new JTable(new DefaultTableModel(data, spalten));
+        vorgangstabelle.getColumnModel().getColumn(0).setPreferredWidth(50);
+        //vorgangstabelle.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        //vorgangstabelle.setFillsViewportHeight(true);
         
         return vorgangstabelle;
     }

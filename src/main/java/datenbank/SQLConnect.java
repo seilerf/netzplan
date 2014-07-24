@@ -480,4 +480,21 @@ public class SQLConnect {
         this.closeConnection();
         return betriebsMittel;
     }
+
+    public void updateVorgang(Vorgang vorgang) {
+        this.startConnection();
+        String sqlQuery = "update vorgang "
+                          + "set vorgang.nameVorgang = '" +
+                          vorgang.getName() + "', "
+                          + "vorgang.dauer = '" + vorgang.getDauer() + //"', "
+                          //+ "vorgang.Netzplan_idNetzplan = '" + vorgang.getNetzRefId() +
+                            "' where vorgang.idVorgang = " + vorgang.getVorgangId() + ";";
+        System.out.println(sqlQuery);
+        try {
+            //ResultSet rsVorgang = this.getConnection().createStatement().executeQuery(sqlQuery);
+            this.getConnection().createStatement().executeUpdate(sqlQuery);
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLConnect.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

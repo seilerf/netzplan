@@ -10,8 +10,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -19,96 +18,151 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import netzcontroller.VorgangController;
+import netzplan.Vorgang;
 
 /**
  *
  * @author fseiler
  */
-public class VorgangView extends JFrame implements Observer{
+public class VorgangView extends JFrame{
 
-    private boolean editable;
+    private JMenuBar menu;
+    private JMenu menuVorgang;
+    private JMenuItem menuEnde;
+    private JButton btnEditSave;
+    private JComboBox cbNetzplanAuswahl;
     
-    public VorgangView(VorgangController controller) {
-        
-        this.editable = false;
-        this.setTitle("Neuer Vorgang");
-        this.setSize(350, 200);
-        
-        JMenuBar menu = new JMenuBar();
-        JMenu menuVorgang = new JMenu("Vorgang");
-        JMenuItem menuEnde = new JMenuItem("Schließen");
+    private JTextField txtDauer;
+    private JTextField vorgangName;
+    private int netzplanId;
+    
+    
+    /**
+     * Konstruktor für die Erstellung eines neuen Vorgang
+     */
+    public VorgangView(JComboBox netzplanAuswahl) {
+        this.erstelleMenu();
+        this.erstelleButtons();
+        this.cbNetzplanAuswahl = netzplanAuswahl;
+        this.showView();
+    }
+    
+    /**
+     * Konstruktor, um einen ausgewählten Vorgang zu bearbeiten
+     * @param vorgang 
+     */    
+    public VorgangView(JComboBox netzplanAuswahl, Vorgang vorgang){
+        this.erstelleMenu();
+        this.erstelleButtons();
+        this.cbNetzplanAuswahl = netzplanAuswahl;
+        this.showView();
+    }
+    
+    private void erstelleMenu(){
+        menu = new JMenuBar();
+        menuVorgang = new JMenu("Vorgang");
+        menuEnde = new JMenuItem("Schließen");
         
         menuVorgang.add(menuEnde);
-        
         menu.add(menuVorgang);
         this.setJMenuBar(menu);
+    }
+    
+    private void erstelleButtons(){
+         btnEditSave = new JButton();
+         btnEditSave.setText("Speichern");
+    }
+    
+    public void setBtnSaveListener(ActionListener l){
+        this.btnEditSave.addActionListener(l);
+    }
+    
+    public void setNetzplanAuswahl(JComboBox cbNetzplanAuswahl){
+        this.cbNetzplanAuswahl = cbNetzplanAuswahl;        
+    }
+    
+    /**
+     * Gibt den Namen des Vorgangs aus dem Textfeld "Name" zurück.
+     * @return Name des Vorgangs
+     */
+    public String getVorgangName(){
+        try{
+            return this.vorgangName.getText();
+        } catch (NullPointerException e){
+            return null;
+        }
+    }
+    
+    public void setVorgangName(String name){
+        this.setTitle(name);
+        this.vorgangName.setText(name);
+    }
+    
+    /**
+     * Gibt den Wert aus dem Textfeld "Dauer" als Double zurück.
+     * @return Den Wert, der im Textfeld "Dauer" eingetragen wurde.
+     */
+    public double getDauer(){
+        Double vDauer;
+        try{
+            vDauer = Double.parseDouble(this.txtDauer.getText());
+        }
+        catch(NullPointerException e){
+            vDauer = 0.0;
+        }
+        return vDauer;
+    }
+    
+    public void setDauer(double dauer){
+        this.txtDauer.setText(Double.toString(dauer));
+    }
+    
+    public void setNetzplanId(int id){
+        this.netzplanId = id;
+    }
+    public int getNetzplanId(){
+        return netzplanId;
+    }
+    
+    public int getSelectedNetzplan(){
+        return netzplanId;
+    }
+    
+    private void showView(){
+        this.setSize(350, 200);
         
         GridBagLayout gbl = new GridBagLayout();
         
         Container inhalt = this.getContentPane();
         inhalt.setLayout(gbl);
         
-        JLabel titel = new JLabel(controller.getVorgangName());
-        titel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.vorgangName = new JTextField();
+        vorgangName.setHorizontalAlignment(SwingConstants.LEFT);
+        vorgangName.setBorder(new TitledBorder("Name"));
+        //vorgangName.setText("Netzplan-Id: " + this.netzplanId);
         
-        // Textfelder erstellen, die die Daten beinhalten
-        JTextField txtFAZ = new JTextField();
-        txtFAZ.setBorder(new TitledBorder("FAZ"));
-        txtFAZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtFAZ.setEditable(true);
-
-        JTextField txtFEZ = new JTextField();
-        txtFEZ.setBorder(new TitledBorder("FEZ"));
-        txtFEZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtFEZ.setEditable(true);
-        
-        JTextField txtSAZ = new JTextField();
-        txtSAZ.setBorder(new TitledBorder("SAZ"));
-        txtSAZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtSAZ.setEditable(true);
-        
-        JTextField txtSEZ = new JTextField();
-        txtSEZ.setBorder(new TitledBorder("SEZ"));
-        txtSEZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtSEZ.setEditable(true);
-        
-        JTextField txtDauer = new JTextField();
+        txtDauer = new JTextField();
         txtDauer.setBorder(new TitledBorder("Dauer"));
-        txtDauer.setHorizontalAlignment(SwingConstants.CENTER);
+        txtDauer.setHorizontalAlignment(SwingConstants.LEFT);
         txtDauer.setEditable(true);
-        
-        JTextField txtPuffer = new JTextField();
-        txtPuffer.setBorder(new TitledBorder("Puffer"));
-        txtPuffer.setHorizontalAlignment(SwingConstants.CENTER);
-        txtPuffer.setEditable(true);
         
         JComboBox combobox = new JComboBox();
         combobox.setBorder(new TitledBorder("Netzplan:"));
-        //combobox.setHorizontalAlignment(SwingConstants.CENTER);
-       
-        
-        
-        JButton btnEditSave = new JButton();
-        
-            btnEditSave.setText("Speichern");
-            btnEditSave.addActionListener(controller);
-        
-        
+
         // Zeichnen der Komponenten in das GUI
-        //                                        x  y    b  h    wx wy
-        addComponent(inhalt, gbl, titel,          0, 0,   3, 1,   0, 0);
-        addComponent(inhalt, gbl, txtFAZ,         0, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtDauer,       1, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtFEZ,         2, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSAZ,         0, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtPuffer,      1, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, combobox,      2, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSEZ,         0, 4,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, btnEditSave,    0, 5,   0, 0,   0, 0);
+        //                                           x  y    b  h    wx wy
+        addComponent(inhalt, gbl, vorgangName,       0, 0,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtDauer,          0, 1,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, cbNetzplanAuswahl, 0, 2,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, new JSeparator(),  0, 3,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, btnEditSave,       0, 4,   0, 0,   3, 0);
+        
+        this.setSize(400, 285);
     }
 
     
@@ -141,9 +195,4 @@ public class VorgangView extends JFrame implements Observer{
         gbl.setConstraints(c, gbc);
         cont.add(c);
     }
-    
-    public void update(Observable o, Object arg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }
