@@ -24,10 +24,10 @@ import netzview.VorgangView;
  */
 public class VorgangController{
 
-    private Vorgang vorgang;
-    private VorgangView vorgangView;
-    private JComboBox netzplanAuswahl;
-    private String[] netzplanListe;
+    private final Vorgang vorgang;
+    private final VorgangView vorgangView;
+    private final JComboBox netzplanAuswahl;
+    private final String[] netzplanListe;
 
     public VorgangController(String[] netzplanListe) {
         this.netzplanListe = netzplanListe;
@@ -59,14 +59,30 @@ public class VorgangController{
         this.vorgangView.setVisible(true);
     }
     
+    /**
+     * Gibt den Namen des Vorgangs, den der Controller erzeugt hat aus
+     * @author Florian Seiler
+     * @return 
+     */
     public String getVorgangName(){
         return this.vorgang.getName();
     }
     
+    /**
+     * Fügt einen Listener in der zugehörigen View an, der das Speichern nach
+     * einem Klickevent auslöst.
+     * @author Florian Seiler
+     */
     private void addListener(){
         vorgangView.setBtnSaveListener(new SaveListener());
     }
     
+    /**
+     * Speichert den Vorgang in der Datenbank. Die Methode prüft zunächst, ob es sich
+     * bei dem Vorgang um einen neuen Vorgang handelt oder, ob ein bereits vorhandener
+     * Vorgang geändert werden soll.
+     * @param netzRefId die ID des Netzplans, zu dem der Vorgang gehört
+     */
     private void speichereVorgang(int netzRefId){
         System.out.println("speichere Vorgang: " + vorgang.getName());
         SQLConnect sqlConnect = new SQLConnect();
@@ -83,7 +99,8 @@ public class VorgangController{
     }
     
     /**
-     * Hilfsklasse, die einen Actionlistener auf den Speichern-Button in der VorgangView platziert.
+     * Hilfsklasse, mit der ein Actionlistener in der VorgangView auf den Speichern-
+     * Button gelegt werden kann.
      */
     class SaveListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
