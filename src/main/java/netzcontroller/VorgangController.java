@@ -50,7 +50,6 @@ public class VorgangController{
         this.vorgang = vorgang;
         // View erstellen
         this.vorgangView = new VorgangView(netzplanAuswahl);
-        vorgangView.setNetzplanAuswahl(new JComboBox(netzplanListe));
         this.vorgangView.setVorgangName(vorgang.getName());
         this.vorgangView.setDauer(vorgang.getDauer());
         this.vorgangView.setNetzplanId(vorgang.getNetzRefId());
