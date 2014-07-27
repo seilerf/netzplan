@@ -32,6 +32,7 @@ public class NetzplanView extends AbstractView{
     private JMenuItem oeffnen;
     private JMenuItem speichern;
     private JMenuItem vorgangNeu;
+    private JMenuItem bmgNeu;
     private JMenuItem beenden;
     private JMenuItem ganttView;
     private JMenuItem vorgangsZeit;
@@ -67,6 +68,7 @@ public class NetzplanView extends AbstractView{
         oeffnen = new JMenuItem("Öffnen...");
         speichern = new JMenuItem("Speichern...");
         vorgangNeu = new JMenuItem("Neuer Vorgang...");
+        bmgNeu = new JMenuItem("Neue Betriebsmittelgruppe...");
         beenden = new JMenuItem("Beenden");
         ganttView = new JMenuItem("Gantt-Diagramm");
         bmgAuslast = new JMenuItem("BMG-Auslastung");
@@ -75,6 +77,10 @@ public class NetzplanView extends AbstractView{
     
     public void setMenuOeffnenListener(ActionListener l){
         this.oeffnen.addActionListener(l);
+    }
+    
+    public void setMenuBmgNeuListener(ActionListener l){
+        this.bmgNeu.addActionListener(l);
     }
     
     public void setVorgangNeuListener(ActionListener l){
@@ -113,7 +119,8 @@ public class NetzplanView extends AbstractView{
         netzplanMenu.add(oeffnen);
         netzplanMenu.add(speichern);
         netzplanMenu.add(vorgangNeu);
-        netzplanMenu.insertSeparator(4);
+        netzplanMenu.add(bmgNeu);
+        netzplanMenu.insertSeparator(5);
         netzplanMenu.add(beenden);
 
         ansichtMenu.add(ganttView);

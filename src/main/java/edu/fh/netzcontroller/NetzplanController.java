@@ -82,6 +82,7 @@ public class NetzplanController{
         this.netzplanView.setGanttOeffnenListener(new MenuGanttListener());
         this.netzplanView.setBmgListener(new MenuBmgListener());
         this.netzplanView.setVorgangNeuListener(new VorgangNeuListener());
+        this.netzplanView.setMenuBmgNeuListener(new MenuBmgNeuListener());
         this.netzplanView.setVorgangOeffnenListener(new VorgangOeffnenListener());
     }
 
@@ -186,6 +187,13 @@ public class NetzplanController{
 
         public void actionPerformed(ActionEvent e) {
             BmgController bmg = new BmgController(netzplanung);
+        }
+    }
+    
+    class MenuBmgNeuListener implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+            BmgNeuController bmgNeu = new BmgNeuController();
         }
         
     }
