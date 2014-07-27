@@ -6,10 +6,12 @@
 
 package edu.fh.netzview;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author fseiler
  */
-public class AbstractView {
+public class AbstractView extends JFrame{
     
 }

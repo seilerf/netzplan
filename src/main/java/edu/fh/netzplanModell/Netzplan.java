@@ -7,35 +7,30 @@
 package edu.fh.netzplanModell;
 
 import java.util.LinkedList;
-import java.util.Observable;
 
 /**
  *
- * @author fseiler/ M.Ullmann
+ * @author Florian Seiler / M.Ullmann
  */
-public class Netzplan extends Observable{
-    //Parameter eines Netzplanes
-    //Der Name des Netzplanes
+public class Netzplan{
     private String name;
-    //Die Id des Netzplanes
     private int id;
-    //Anzahl der Vorgaenge
+    // Anzahl Vorgänge
     private int anzahl;
-    //Start-Wert des Netzplanes
     private double start;
-    //End-Wert des Netzplanes
     private double ende;
-    //Gesamter Puffer
     private double gesamtPuffer;
-    //Freier Puffer
     private double freierPuffer;
-
+    private LinkedList<Vorgang> vorgaenge;
+    
     /**
      * Default Konstruktor
      */
-    public Netzplan() {    
+    public Netzplan() {
+        vorgaenge = new LinkedList<Vorgang>();
+        vorgaenge.addFirst(null);
     }
-
+    
     /**
      * Konstruktur für den Netzplan
      */
@@ -46,110 +41,119 @@ public class Netzplan extends Observable{
         this.ende = endZeit;
         this.gesamtPuffer = 0;
         this.freierPuffer = 50;
-        
+        vorgaenge = new LinkedList<Vorgang>();
+        vorgaenge.addFirst(null);
+    }
+    
+    public Netzplan(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+    
+    public void setId(int id){
+        this.id = id;
     }
     
     /**
-     * Getter fuer den Gesamt-Puffer.
-     * @return gesamtPuffer
+     * Gibt die ID des Netzplans wieder. 
+     * @return Int - NetzplanID
      */
+    public int getId(){
+        return this.id;
+    }
+    
     public double getGesamtPuffer() {
         return gesamtPuffer;
     }
 
-    /**
-     * Setter fuer den Gesamt-Puffer.
-     * @param gesamtPuffer -> Wert des Gesamt-Puffers 
-     */
     public void setGesamtPuffer(double gesamtPuffer) {
         this.gesamtPuffer = gesamtPuffer;
     }
 
-    /**
-     * Getter fuer den Freien-Puffer.
-     * @return freierPuffer
-     */
     public double getFreierPuffer() {
         return freierPuffer;
     }
 
-    /**
-     * Setter fuer den Freien-Puffer.
-     * @param freierPuffer -> Wert des Freien-Puffers
-     */
     public void setFreierPuffer(double freierPuffer) {
         this.freierPuffer = freierPuffer;
     }
- 
+    
     /**
-     * Getter fuer den Namen des Netzplanes.
-     * @return name
+     * Gibt den Namen des Netzplans als String zurück.
+     * @return String - Name des Netzplans
      */
     public String getName() {
         return name;
     }
     
     /**
-     * Setter fuer den Namen des Netzplanes.
-     * @param name -> Name des Netzplanes
+     * Ändert den Namen des Netzplans.
+     * @param name - String
      */
     public void setName(String name){
         this.name = name;
     }
 
     /**
-     * Getter fuer die Id des Netzplanes.
-     * @return id
-     */
-    public int getId() {
-        return id;
-    }
-    
-    /**
-     * Getter fuer die Anzahl.
-     * @return anzahl
+     * Gibt die Anzahl der möglichen Vorgänge im Netzplan wieder. 
+     * @return Int - Anzahl möglicher Vorgänge
      */
     public int getAnzahl() {
         return anzahl;
     }
 
     /**
-     * Setter fuer die Anzahl.
-     * @param anzahl -> Anzahl an Vorgaengen im Netzplan
+     * Setzt die Anzahl der maximal möglichen Vorgänge im Netzplan.
+     * @param anzahl - Int
      */
     public void setAnzahl(int anzahl) {
         this.anzahl = anzahl;
     }
 
-    /**
-     * Getter fuer den Start-Wert.
-     * @return start
-     */
     public double getStart() {
         return start;
     }
 
-    /**
-     * Setter fuer den Start-Wert.
-     * @param start -> Start-Wert
-     */
     public void setStart(double start) {
         this.start = start;
     }
 
-    /**
-     * Getter fuer den End-Wert.
-     * @return ende
-     */
     public double getEnde() {
         return ende;
     }
 
-    /**
-     * Setter fuer den End-Wert
-     * @param ende -> End-Wert
-     */
     public void setEnde(double ende) {
         this.ende = ende;
+    }
+
+    /**
+     * Methode, mit der ein Vorgang zu einem Netzplan hinzugefügt werden kann.
+     * @author Florian Seiler
+     * @param vorgang
+     */
+    public void addVorgang(Vorgang vorgang){
+        if(vorgaenge.getFirst() == null){
+            vorgaenge.removeFirst();
+            vorgaenge.addFirst(vorgang);
+        }
+        else{
+            vorgaenge.add(vorgang);
+        }
+    }
+    
+    /**
+     * Gibt die Vorgänge des Netzplans wieder. 
+     * @return LinkedList<Vorgang> - Vorgänge im Netzplan
+     */
+    public LinkedList<Vorgang> getVorgaenge() {
+        return vorgaenge;
+    }
+    
+    /**
+     * Setzt eine neue Vorgangsliste im Netzplan.
+     * @param vorgaenge - LinkedList<Vorgang>
+     */
+    public void setVorgaenge(LinkedList<Vorgang> vorgaenge) {
+        this.vorgaenge = vorgaenge;
     }
 }

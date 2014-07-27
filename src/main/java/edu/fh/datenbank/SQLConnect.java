@@ -6,7 +6,6 @@
 
 package edu.fh.datenbank;
 
-import java.awt.GridBagConstraints;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -24,8 +23,8 @@ public class SQLConnect {
     // MySQL Parameter
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DATABASE_URL = "jdbc:mysql://localhost/netzplan";
-    static final String USER = "root";
-    static final String PWD = "asdfghjk1";
+    static final String USER = "oopuser";
+    static final String PWD = "testpw";
     
     private Connection conn;
     private LinkedList<Vorgang> vorgaenge;

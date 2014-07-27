@@ -16,11 +16,7 @@ import javax.swing.JMenuItem;
 import edu.fh.netzcontroller.BmgController;
 import edu.fh.netzcontroller.GanttController;
 import edu.fh.netzcontroller.NewNetzController;
-import edu.fh.netzcontroller.NetzOeffnenController;
-import edu.fh.netzcontroller.VorgangController;
-import edu.fh.netzplanModell.Vorgang;
-import java.util.LinkedList;
-import org.jfree.ui.RefineryUtilities;
+//import edu.fh.netzcontroller.NetzOeffnenController;
 
 /**
  *
@@ -56,7 +52,7 @@ public class StartView extends JFrame{
         
          oeffnen.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-             NetzOeffnenController netzoeffnen = new NetzOeffnenController();
+             //NetzOeffnenController netzoeffnen = new NetzOeffnenController();
         }
     }); 
         
@@ -67,7 +63,7 @@ public class StartView extends JFrame{
         
         vorgangNeu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-             VorgangController neuvorgang = new VorgangController();
+             //VorgangController neuvorgang = new VorgangController();
         }
     }); 
         

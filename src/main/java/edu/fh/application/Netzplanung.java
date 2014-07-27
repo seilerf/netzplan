@@ -7,11 +7,8 @@
 package edu.fh.application;
 
 import edu.fh.datenbank.SQLConnect;
-import java.awt.GridBagConstraints;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import edu.fh.netzplanModell.Betriebsmittelgruppe;
 import edu.fh.netzplanModell.Netzplan;
 import edu.fh.netzplanModell.Vorgang;

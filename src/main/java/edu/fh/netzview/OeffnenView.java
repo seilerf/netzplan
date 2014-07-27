@@ -6,20 +6,7 @@
 
 package edu.fh.netzview;
 
-import edu.fh.datenbank.SQLConnect;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import static javax.swing.GroupLayout.Alignment.LEADING;
 import static javax.swing.GroupLayout.Alignment.TRAILING;
@@ -29,65 +16,30 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
-import edu.fh.netzcontroller.NetzOeffnenController;
-import edu.fh.netzplanModell.Netzplan;
 
 /**
  *
- * @author Anton
+ * @author Anton, Florian Seiler
  */
-public class OeffnenView extends JFrame implements Observer{
+public class OeffnenView extends AbstractView{
 
     private boolean editable;
+    private JButton btnOeffnen;
+    private JScrollPane scrollpane;
     
-    public OeffnenView(NetzOeffnenController controller) {
-        
+    public OeffnenView(JTable table) {   
+        this.scrollpane = new JScrollPane(table);
         this.setTitle("Netzplan öffnen");
-        
-        String[] columnNames = {"Netzplan ID",
-                                "Netzplanname"};
-        
-        Object[][] data = null;
-        
-        try {
-            LinkedList<Netzplan> netzplanListe = new SQLConnect().ladeAlleNetzplaene();
-            data = new Object[netzplanListe.size()][2];
-            
-            int i = 0;
-            for (Netzplan netzplan : netzplanListe) {
-                data[i][0] = netzplan.getId();
-                data[i][1] = netzplan.getName();
-                i++;
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(OeffnenView.class.getName()).log(Level.SEVERE, null, ex);
-        }
- 
-        final JTable table = new JTable(data, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        table.setFillsViewportHeight(true);
-        
-        JScrollPane scrollpane = new JScrollPane(table);
-        JButton btnOeffnen = new JButton("Öffnen");
-        
-        btnOeffnen.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    System.out.println("Lade " + table.getValueAt(table.getSelectedRow(), 1) + "...");
-                    Netzplan netzplan = new SQLConnect().ladeNetzplan((Integer)table.getValueAt(table.getSelectedRow(), 0));
-                    System.out.println("Netzplan geladen!");                            
-                } catch(SQLException sqlE){
-                    System.out.println("Fehler bei der Datenbankabfrage: " + sqlE.getMessage());
-                } catch (ArrayIndexOutOfBoundsException npe) {
-                    System.out.println("Fehler: " + npe.getMessage());
-                }
-            }
-        });
-        
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-
+        this.btnOeffnen = new JButton("Öffnen");
+        this.setLayout();
+    }
+    
+    /**
+     * Mit dieser Methode wird die GUI gezeichnet.
+     * @author Florian Seiler
+     */
+    private void setLayout(){
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -114,8 +66,12 @@ public class OeffnenView extends JFrame implements Observer{
         pack();
     }
     
-    public void update(Observable o, Object arg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Methode, die den Controllern zur Verfügung steht, um Listener zu platzieren. 
+     * @author Florian Seiler
+     */
+    public void setBtnOeffnenListener(ActionListener l){
+        btnOeffnen.addActionListener(l);
     }
     
 }
