@@ -23,8 +23,8 @@ public class SQLConnect {
     // MySQL Parameter
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DATABASE_URL = "jdbc:mysql://localhost/netzplan";
-    static final String USER = "oopuser";
-    static final String PWD = "testpw";
+    static final String USER = "root";
+    static final String PWD = "asdfghjk1";
     
     private Connection conn;
     private LinkedList<Vorgang> vorgaenge;
@@ -302,6 +302,43 @@ public class SQLConnect {
         rsBetrMt.close();
         this.closeConnection();
     }
+    
+    
+    
+    public int updateVorgangBmg(int vorgangid,  int bmgid ) throws SQLException
+    {
+        this.startConnection();   
+       Statement s=this.getConnection().createStatement();
+        String sqlQuery =  "UPDATE vorgang_has_betriebsmittelgruppe SET Betriebsmittelgruppe_idBetriebsmittelgruppe = "+bmgid+"  WHERE Vorgang_idVorgang = "+vorgangid+"";
+        int zeilen=s.executeUpdate(sqlQuery);
+        this.closeConnection();
+        return zeilen;
+       
+    }
+    
+    
+      public void insertVorgangBmg(int vorgangid, int netzplanid, int bmgid ) throws SQLException
+    {
+        this.startConnection();   
+        
+        
+        String sqlQuery = "SELECT * FROM vorgang_has_betriebsmittelgruppe;";
+        ResultSet rsNetzplan = this.getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery(sqlQuery);
+        rsNetzplan.next();
+        rsNetzplan.moveToInsertRow();
+        rsNetzplan.updateInt("Vorgang_idVorgang", vorgangid);
+        rsNetzplan.updateInt("Vorgang_Netzplan_idNetzplan", netzplanid);
+        rsNetzplan.updateInt("Betriebsmittelgruppe_idBetriebsmittelgruppe", bmgid);
+       
+        rsNetzplan.insertRow();
+        rsNetzplan.close();
+       
+        this.closeConnection();
+        
+       
+    }
+    
+    
    
     /**
      * Funktion um alle Vorgänger zu einem bestimmten Vorgang zu erhalten.

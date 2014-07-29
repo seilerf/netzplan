@@ -41,7 +41,15 @@ public class NetzplanController{
     private JTable netzplantabelle;
     // Tabelle zu Auflistung der Vorgänge eines Netzplans in der NetzplanView
     private JTable vorgangstabelle;
+    private int id=0;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     /**
      * Konstruktor des Netzplancontrollers.
      * @author Florian Seiler
@@ -127,10 +135,12 @@ public class NetzplanController{
         public void actionPerformed(ActionEvent e) {
             int id;
             VorgangController vorgangContr;
+            VorganganzeigenController vorgangContr2;
             try {
                 id = (Integer)vorgangstabelle.getValueAt(vorgangstabelle.getSelectedRow(), 0);
                 Vorgang vorgang = new SQLConnect().ladeVorgang(id);
-                vorgangContr = new VorgangController(erstelleNetzplanListe(), vorgang);
+               vorgangContr2 = new VorganganzeigenController( vorgang, getId());
+//vorgangContr = new VorgangController(erstelleNetzplanListe(), vorgang);
             } catch (NullPointerException npe){
                 System.out.println("Nullpointer");
                 id = 0;
@@ -155,7 +165,7 @@ public class NetzplanController{
     class btnOeffnenListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
-                int id = (Integer)netzplantabelle.getValueAt(netzplantabelle.getSelectedRow(), 0);
+                setId((Integer)netzplantabelle.getValueAt(netzplantabelle.getSelectedRow(), 0));
                 Netzplan netzplan = new SQLConnect().ladeNetzplan(id);
                 System.out.println("Netzplan " + netzplan.getName() + " mit der ID " + id + " geladen!");
                 setNetzplan(netzplan);

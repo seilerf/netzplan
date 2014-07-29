@@ -38,11 +38,13 @@ public class VorganganzeigenView extends JFrame {
 
     private boolean editable;
     private Vorgang vorgang;
-    public VorganganzeigenView(final VorganganzeigenController controller, final Vorgang vorgang) {
+     JComboBox bmgauswahl;
+    public VorganganzeigenView(final VorganganzeigenController controller, final Vorgang vorgang,final JComboBox bmgauswahl) {
         this.vorgang=vorgang;
         this.editable = false;
         this.setTitle(vorgang.getName());
         this.setSize(400, 250);
+        this.bmgauswahl = bmgauswahl;
         
         JMenuBar menu = new JMenuBar();
         JMenu menuVorgang = new JMenu("Vorgang");
@@ -66,23 +68,23 @@ public class VorganganzeigenView extends JFrame {
         JTextField txtFAZ = new JTextField( String.valueOf(vorgang.getFaz()),20);
         txtFAZ.setBorder(new TitledBorder("FAZ"));
         txtFAZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtFAZ.setEditable(true);
+        txtFAZ.setEditable(false);
 
         JTextField txtFEZ = new JTextField(String.valueOf(vorgang.getFez()),20);
         txtFEZ.setBorder(new TitledBorder("FEZ"));
         
         txtFEZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtFEZ.setEditable(true);
+        txtFEZ.setEditable(false);
         
         JTextField txtSAZ = new JTextField(String.valueOf(vorgang.getSaz()),20);
         txtSAZ.setBorder(new TitledBorder("SAZ"));
         txtSAZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtSAZ.setEditable(true);
+        txtSAZ.setEditable(false);
         
         JTextField txtSEZ = new JTextField(String.valueOf(vorgang.getSez()),20);
         txtSEZ.setBorder(new TitledBorder("SEZ"));
         txtSEZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtSEZ.setEditable(true);
+        txtSEZ.setEditable(false);
         
         final JTextField txtDauer = new JTextField(String.valueOf(vorgang.getDauer()),20);
         txtDauer.setBorder(new TitledBorder("Dauer"));
@@ -92,13 +94,17 @@ public class VorganganzeigenView extends JFrame {
         JTextField txtPuffer = new JTextField();
         txtPuffer.setBorder(new TitledBorder("Puffer"));
         txtPuffer.setHorizontalAlignment(SwingConstants.CENTER);
-        txtPuffer.setEditable(true);
+        txtPuffer.setEditable(false);
         
         final JTextField name = new JTextField(vorgang.getName());
         name.setBorder(new TitledBorder("Name:"));
         name.setHorizontalAlignment(SwingConstants.CENTER);
         name.setEditable(true);
        
+        
+        //JComboBox combobox = new JComboBox();
+        this.bmgauswahl.setBorder(new TitledBorder("BMG:"));
+        
         
         JButton btnEditescape = new JButton();
         
@@ -116,7 +122,8 @@ public class VorganganzeigenView extends JFrame {
  
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controller.actionPerformed(txtDauer.getText(), name.getText());
+                     String bmgName = (String)bmgauswahl.getSelectedItem();
+                    controller.actionPerformed(txtDauer.getText(), name.getText(), bmgName);
                 } catch (SQLException ex) {
                     Logger.getLogger(VorganganzeigenView.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -132,6 +139,8 @@ public class VorganganzeigenView extends JFrame {
         addComponent(inhalt, gbl, txtSAZ,         0, 3,   1, 1,   3, 0);
         addComponent(inhalt, gbl, name,           1, 3,   1, 1,   3, 0);
         addComponent(inhalt, gbl, txtSEZ,         2, 3,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, this.bmgauswahl,     1, 4,   1, 1,   3, 0);
+        
         addComponent(inhalt, gbl, btnEditSave,    0, 5,   1, 1,   4.5, 0);
         addComponent(inhalt, gbl, btnEditescape,  1, 5,   1, 1,   4.5, 0);
     }
