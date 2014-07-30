@@ -111,6 +111,7 @@ public class VorgangView extends JFrame{
         Double vDauer;
         try{
             vDauer = Double.parseDouble(this.txtDauer.getText());
+            
         }
         catch(NullPointerException e){
             vDauer = 0.0;

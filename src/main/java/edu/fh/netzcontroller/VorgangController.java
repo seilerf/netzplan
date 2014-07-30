@@ -87,7 +87,7 @@ public class VorgangController{
         SQLConnect sqlConnect = new SQLConnect();
         if(this.vorgang.getVorgangId() == 0){
             try {
-                sqlConnect.insertVorgang(vorgang.getName(), netzRefId, netzRefId);
+                sqlConnect.insertVorgang(vorgang.getName(), vorgangView.getDauer(), netzRefId);
             } catch (SQLException ex) {
                 Logger.getLogger(VorgangController.class.getName()).log(Level.SEVERE, null, ex);
             }
