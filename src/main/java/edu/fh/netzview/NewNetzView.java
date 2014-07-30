@@ -22,84 +22,119 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import edu.fh.netzcontroller.NewNetzController;
+import java.awt.event.ActionListener;
+import javax.swing.JSeparator;
 
 /**
  *
  * @author Anton
  */
-public class NewNetzView extends JFrame implements Observer{
+public class NewNetzView extends AbstractView {
 
-    private boolean editable;
+     private JMenuBar menu;
+    private JMenu menuBmg;
+    private JMenuItem menuEnde;
+    private JButton btnEditSave;
+    private JTextField netzName;
+    private JTextField txtend;
+    private JTextField txtstart;
     
-    public NewNetzView(NewNetzController controller) {
+    public NewNetzView() {
+        this.erstelleMenu();
+        this.erstelleButtons();
         
-        this.editable = false;
-        this.setTitle("Neuer Netzplan");
-        this.setSize(350, 200);
+        this.showView();
+    }
+    
+    private void erstelleMenu(){
+        menu = new JMenuBar();
+        menuBmg = new JMenu("Netzplan");
+        menuEnde = new JMenuItem("Schließen");
         
-        JMenuBar menu = new JMenuBar();
-        JMenu menuVorgang = new JMenu("Datei");
-        JMenuItem menuEnde = new JMenuItem("Schließen");
-        JMenuItem speichern = new JMenuItem("Speichern");
-        menuVorgang.add(menuEnde);
-        menuVorgang.add(speichern);
-        
-        menu.add(menuVorgang);
+        menuBmg.add(menuEnde);
+        menu.add(menuBmg);
         this.setJMenuBar(menu);
+    }
+    
+    private void erstelleButtons(){
+         btnEditSave = new JButton();
+         btnEditSave.setText("Speichern");
+    }
+    
+    public void setBtnSaveListener(ActionListener l){
+        this.btnEditSave.addActionListener(l);
+    }
+     
+    /**
+     * Gibt den Namen der Betriebsmittelgruppe aus dem Textfeld "Name" zurück.
+     * @return Name der Betriebsmittelgruppe
+     */
+    public String getNetzName(){
+        try{
+            return this.netzName.getText();
+        } catch (NullPointerException e){
+            return null;
+        }
+    }
+        
+    /**
+     * Gibt den Wert aus dem Textfeld "Kapazität" als Double zurück.
+     * @return Den Wert, der im Textfeld "Kapazität" eingetragen wurde.
+     */
+    public double getstart(){
+        Double start;
+        try{
+            start = Double.parseDouble(this.txtstart.getText());
+        }
+        catch(NullPointerException e){
+            start = 0.0;
+        }
+        return start;
+    }
+    
+    
+     public double getend(){
+        Double end;
+        try{
+            end = Double.parseDouble(this.txtend.getText());
+        }
+        catch(NullPointerException e){
+            end = 0.0;
+        }
+        return end;
+    }
+    
+    private void showView(){
+        this.setSize(350, 200);
         
         GridBagLayout gbl = new GridBagLayout();
         
         Container inhalt = this.getContentPane();
         inhalt.setLayout(gbl);
         
-        // Textfelder erstellen, die die Daten beinhalten
-        JTextField txtFAZ = new JTextField();
-        txtFAZ.setBorder(new TitledBorder("Maximale Dauer"));
-        txtFAZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtFAZ.setEditable(true);
-
-        JTextField txtFEZ = new JTextField();
-        txtFEZ.setBorder(new TitledBorder("Anzahl Vorgänge"));
-        txtFEZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtFEZ.setEditable(true);
+        this.netzName = new JTextField();
+        netzName.setHorizontalAlignment(SwingConstants.LEFT);
+        netzName.setBorder(new TitledBorder("Name"));
         
-        JTextField txtSAZ = new JTextField();
-        txtSAZ.setBorder(new TitledBorder("Name"));
-        txtSAZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtSAZ.setEditable(true);
+        txtend = new JTextField();
+        txtend.setBorder(new TitledBorder("Ende:"));
+        txtend.setHorizontalAlignment(SwingConstants.LEFT);
+        txtend.setEditable(true);
         
-        JTextField txtSEZ = new JTextField();
-        txtSEZ.setBorder(new TitledBorder("dies das Ananas"));
-        txtSEZ.setHorizontalAlignment(SwingConstants.CENTER);
-        txtSEZ.setEditable(true);
+        txtstart = new JTextField();
+        txtstart.setBorder(new TitledBorder("Start:"));
+        txtstart.setHorizontalAlignment(SwingConstants.LEFT);
+        txtstart.setEditable(true);
         
-        JTextField txtDauer = new JTextField();
-        txtDauer.setBorder(new TitledBorder("blub"));
-        txtDauer.setHorizontalAlignment(SwingConstants.CENTER);
-        txtDauer.setEditable(true);
+        // Zeichnen der Komponenten in das GUI
+        //                                           x  y    b  h    wx wy
+        addComponent(inhalt, gbl, netzName,           0, 0,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtstart,      0, 1,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, txtend,      0, 2,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, new JSeparator(),  0, 3,   1, 1,   3, 0);
+        addComponent(inhalt, gbl, btnEditSave,       0, 4,   0, 0,   3, 0);
         
-        JButton btnEditSave = new JButton();
-       
-        btnEditSave.setText("Speichern");
-        btnEditSave.addActionListener(controller);
-            
-        JButton neuVorgang = new JButton();
-       
-        neuVorgang.setText("Vorgänge anlegen");
-        neuVorgang.addActionListener(controller);
-            
-        
-        // Zeichnen der Komponenten auf Bildschirm x  y    b  h    wx wy
-        //---------------------------------------------------------------//
-        //addComponent(inhalt, gbl, titel,         0, 0,   3, 1,   0, 0);
-        addComponent(inhalt, gbl, txtFAZ,          0, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtDauer,        1, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtFEZ,          2, 1,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSAZ,          0, 3,   1, 1,   3, 0);
-        //addComponent(inhalt, gbl, txtPuffer,     1, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, txtSEZ,          2, 3,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, btnEditSave,     1, 5,   1, 1,   3, 0);
-        addComponent(inhalt, gbl, neuVorgang,      0, 5,   1, 1,   3, 0);
+        this.setSize(400, 285);
     }
 
     
@@ -115,7 +150,7 @@ public class NewNetzView extends JFrame implements Observer{
      * @param weightx
      * @param weighty 
      */
-     private static void addComponent(Container cont,
+    private static void addComponent(Container cont,
                             GridBagLayout gbl,
                             Component c,
                             int x, int y,
@@ -124,20 +159,12 @@ public class NewNetzView extends JFrame implements Observer{
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = x; 
-        gbc.gridy = y;
-        gbc.gridwidth = width; 
-        gbc.gridheight = height;
-        gbc.weightx = weightx; 
-        gbc.weighty = weighty;
+        gbc.gridx = x; gbc.gridy = y;
+        gbc.gridwidth = width; gbc.gridheight = height;
+        gbc.weightx = weightx; gbc.weighty = weighty;
         gbc.ipadx = 20;
         gbc.ipady = 5;
         gbl.setConstraints(c, gbc);
         cont.add(c);
     }
-    
-    public void update(Observable o, Object arg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

@@ -67,7 +67,7 @@ public class BmgNeuController{
      */
     class SaveListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Speichern in der BmgView geklickt");
+            System.out.println("Speichern in der netzView geklickt");
             bmg.setNameBetrMittelGr(bmgNeuView.getBmgName());
             bmg.setBetrMittelKapa(bmgNeuView.getKapa());
             speichereBmg(bmg.getNameBetrMittelGr(), bmg.getBetrMittelKapa());

@@ -127,13 +127,13 @@ public class SQLConnect {
     * @param endZeit -> Endzeit des Netzplans
     * @throws SQLException 
     */
-    public void insertNetzplan(Integer netzplanId, String netzplanName, Double startZeit, Double endZeit) throws SQLException {
+    public void insertNetzplan(String netzplanName, Double startZeit, Double endZeit) throws SQLException {
         this.startConnection();
         String sqlQuery = "SELECT * FROM Netzplan;";
         ResultSet rsNetzplan = this.getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery(sqlQuery);
         rsNetzplan.next();
         rsNetzplan.moveToInsertRow();
-        rsNetzplan.updateInt("idNetzplan", netzplanId);
+        
         rsNetzplan.updateString("nameNetzplan", netzplanName);
         rsNetzplan.updateDouble("startZeit", startZeit);
         rsNetzplan.updateDouble("endZeit", endZeit);
